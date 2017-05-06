@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+    <TITLE> New Document </TITLE>
+    <style>
+	html, * {
+		font-size:16px;
+	}
+
+	body {text-align:center;background-color:#FFE3FF}
+	div {
+		text-align:center;
+		padding-top:10px;
+		color:blue;
+	}
+
+    </style>
+
+    <script>
+	function displayMsg(){
+		var str = "동일한 사이트가 등록되어 있습니다.";
+		document.getElementById('msg').innerText = str;
+		document.getElementById('url').value='';
+		document.getElementById('url').focus();
+	}
+
+	function setMsg(msg){
+		document.getElementById('msg').innerText = msg;
+	}
+
+	function siteAdd(){
+		var sitename = document.getElementById('sitename');
+		if(sitename.value==''){
+			setMsg('사이트명을 입력하세요');
+			sitename.focus();
+			return;
+		}
+
+		var url = document.getElementById('url');
+		if(url.value==''){
+			setMsg('URL을 입력하세요');
+			url.focus();
+			return;
+		}
+		//여기에 앱 메소드 호출
+        if(sitename.value!='' && url.value!=''){
+            MyApp.AddUrl(sitename.value, url.value);
+        }
+	}
+    function showsite(){
+        MyApp.Show();
+    }
+    </script>
+</HEAD>
+
+<BODY style="text-align:center;background-color:#FFCCFF">
+<input type="button" value="이해가 안되요." onclick="()">
+<h3>질문이 있으면 입력하세요.</h3>
+<TABLE style="background-color:#FFF2FF" align="center">
+    <TR>
+        <TD><INPUT TYPE="text" id="Question"></TD>
+    </TR>
+
+    <TR>
+        <TD colspan="2" align="center"><input type="button" value="질문하기" onclick="()"></TD>
+    </TR>
+</TABLE>
+<div id='msg'></div>
+</BODY>
+</HTML>

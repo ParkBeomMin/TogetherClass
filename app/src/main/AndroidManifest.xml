@@ -18,9 +18,9 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".CodeActivity" />
         <activity android:name=".PRegisterActivity" />
-        <activity android:name=".SRegisterActivity">
-            <activity android:name=".MainActivity" />
-        </activity>
+        <activity android:name=".SRegisterActivity"/>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ClassHourActivity"></activity>
     </application>
 
 </manifest>
