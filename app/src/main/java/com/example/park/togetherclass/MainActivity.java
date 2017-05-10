@@ -22,6 +22,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ClassHourActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.MFreeBoardBtn :
+                Intent intent1 = new Intent(MainActivity.this, FreeBoardActivity.class);
+                startActivity(intent1);
+                break;
         }
     }
 
