@@ -17,10 +17,12 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".CodeActivity" />
-        <activity android:name=".PRegisterActivity" />
-        <activity android:name=".SRegisterActivity"/>
         <activity android:name=".MainActivity" />
-        <activity android:name=".ClassHourActivity"></activity>
+        <activity android:name=".ClassHourActivity" />
+        <activity android:name=".QuestionActivity" />
+        <activity android:name=".FreeBoardActivity" />
+        <activity android:name=".NoticeActivity" />
+        <activity android:name=".PotalActivity"></activity>
     </application>
 
 </manifest>

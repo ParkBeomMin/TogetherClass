@@ -3,6 +3,8 @@ package com.example.park.togetherclass;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +23,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0,1,0, "내 정보");
+        menu.add(0,2,0, "로그아웃");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == 1) {
+
+        }else if (item.getItemId() == 2) {
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onBackPressed() {
