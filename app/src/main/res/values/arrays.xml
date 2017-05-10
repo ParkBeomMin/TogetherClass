@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="StudentNum">
+        <item>18학번</item>
+        <item>17학번</item>
+        <item>16학번</item>
+        <item>15학번</item>
+        <item>14학번</item>
+        <item>13학번</item>
+        <item>12학번</item>
+        <item>11학번</item>
+    </string-array>
+
+    <string-array name="Major">
+        <item>소프트웨어학부</item>
+        <item>재료화학공학과</item>
+        <item>기계공학과</item>
+        <item>전자공학부</item>
+        <item>로봇공학과</item>
+        <item>생명나노공학과</item>
+        <item>산업경영공학과</item>
+        <item>융합공학과</item>
+    </string-array>
+
+</resources>
