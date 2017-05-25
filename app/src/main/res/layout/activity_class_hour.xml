@@ -12,6 +12,7 @@
     tools:context="com.example.park.togetherclass.ClassHourActivity">
 
     <Button
+        android:onClick="MyOnClick"
         android:id="@+id/understandingButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
             android:layout_weight="1" />
 
         <Button
+            android:onClick="MyOnClick"
             android:id="@+id/addQuestionButton"
             android:text="전송"
             android:layout_width="wrap_content"

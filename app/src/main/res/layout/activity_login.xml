@@ -10,23 +10,67 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.park.togetherclass.LoginActivity">
 
+    <RadioGroup
+        android:layout_marginBottom="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/grid"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/studentLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="학생"
+            android:textSize="15dp" />
+
+        <RadioButton
+            android:id="@+id/professorLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="교수님"
+            android:textSize="15dp" />
+
+    </RadioGroup>
+
     <GridLayout
+        android:id="@+id/grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:columnCount="2">
 
         <TextView
+            android:id="@+id/NameTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="ID"
+            android:text="NAME"
             android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/idEt"
+            android:id="@+id/nameEt"
             android:layout_width="100dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/NickTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="NICKNAME"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/nickEt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,11 +80,15 @@
             android:textSize="20dp" />
 
         <EditText
+            android:inputType="textPassword"
             android:id="@+id/pwEt"
             android:layout_width="100dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:singleLine="true" />
+
 
         <CheckBox
+            android:checked="false"
             android:id="@+id/autoLoginCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,16 +99,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:onClick="MyonClick"
+            android:onClick="MyOnClick"
             android:text="로그인" />
 
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_columnSpan="2"
-            android:layout_gravity="center_horizontal"
-            android:onClick="MyonClick"
-            android:text="회원가입" />
     </GridLayout>
 </RelativeLayout>

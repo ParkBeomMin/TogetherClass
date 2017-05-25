@@ -182,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="MyonClick"
+                android:onClick="MyOnClick"
                 android:text="취소" />
 
             <Button
@@ -190,7 +190,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="MyonClick"
+                android:onClick="MyOnClick"
                 android:text="확인" />
 
         </LinearLayout>

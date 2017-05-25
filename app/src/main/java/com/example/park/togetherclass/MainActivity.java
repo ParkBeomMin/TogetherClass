@@ -1,6 +1,12 @@
 package com.example.park.togetherclass;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,46 +14,107 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
-    private  long lastTimeBackPressed;
+    private long lastTimeBackPressed;
+    boolean auto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
     }
-    public void MyonClick(View v) {
+
+    void init() {
+        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+        auto = info.getBoolean("auto", false);
+        if (auto) {
+            Snackbar.make(getWindow().getDecorView().getRootView(), "자동로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
+        }
+        else {
+            Snackbar.make(getWindow().getDecorView().getRootView(), "로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    public void MyOnClick(View v) {
+        Intent intent;
         switch (v.getId()) {
-            case R.id.MClassHourBtn :
-                Intent intent = new Intent(MainActivity.this, ClassHourActivity.class);
+            case R.id.MClassHourBtn:
+                final int[] SelectSubject = new int[1];
+                final String[] Subject = {"모앱", "디비", "컴구"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("어떤 과목의 수업입니까?")
+                        .setSingleChoiceItems(Subject, 0, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        SelectSubject[0] = i;
+                                    }
+                                }
+                        )
+                        .setNegativeButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(MainActivity.this, ClassHourActivity.class);
+                                intent.putExtra("Subject", Subject[SelectSubject[0]]);
+                                startActivity(intent);
+                            }
+                        })
+                        .setPositiveButton("취소", null)
+                        .show();
+                break;
+            case R.id.MFreeBoardBtn:
+                intent = new Intent(MainActivity.this, FreeBoardActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.MFreeBoardBtn :
-                Intent intent1 = new Intent(MainActivity.this, FreeBoardActivity.class);
-                startActivity(intent1);
+            case R.id.MNoticeBtn:
+                intent = new Intent(MainActivity.this, NoticeActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.MQuestionBtn:
+                intent = new Intent(MainActivity.this, QuestionActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.MMeetingBtn:
+                intent = new Intent(MainActivity.this, MeetingActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.MHomePageBtn:
+                intent = new Intent(MainActivity.this, PotalActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.MHomeWorkBtn:
+                intent = new Intent(MainActivity.this, HomeWorkActivity.class);
+                startActivity(intent);
                 break;
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0,1,0, "내 정보");
-        menu.add(0,2,0, "로그아웃");
+//        menu.add(0, 1, 0, "내 정보");
+        menu.add(0, 1, 0, "로그아웃");
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == 1) {
-
-        }else if (item.getItemId() == 2) {
-
+        if (item.getItemId() == 1) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.putExtra("Logout", "Logout");
+            SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = info.edit();
+            editor.clear();
+            editor.commit();
+            startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void onBackPressed() {
-        if(System.currentTimeMillis() - lastTimeBackPressed < 1500) {
+        if (System.currentTimeMillis() - lastTimeBackPressed < 1500) {
             finish();
             return;
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_free_board"
+    android:id="@+id/activity_home_work"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,23 +9,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.park.togetherclass.FreeBoardActivity">
+    tools:context="com.example.park.togetherclass.HomeWorkActivity">
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textSize="20dp"
-        android:text="000과목 자유게시판입니다."
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:text="과제현황입니다."
+        android:textSize="20dp" />
+
     <Button
-        android:onClick="MyOnClick"
-        android:id="@+id/WriteBtn"
-        android:text="글 작성하기"
-        android:textSize="20dp"
+        android:id="@+id/HomeWorkAddBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:onClick="MyOnClick"
+        android:text="등록하기"
+        android:textSize="20dp" />
+
     <ListView
-        android:id="@+id/FreeBoardList"
+        android:divider="#2e2e2e"
+        android:dividerHeight="1dp"
+        android:id="@+id/HomeWorkListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
