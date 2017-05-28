@@ -7,14 +7,49 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
             android:id="@+id/inputSubjectEt"
-            android:hint="과제를 입력해주세요."
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <DatePicker
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </DatePicker>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="과제를 입력해주세요." />
+
+        <Button
+            android:id="@+id/DdayBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="기한 설정"></Button>
     </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/r1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="과제"
+            android:textColor="@color/Red" />
+
+        <RadioButton
+            android:id="@+id/r2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="공모전"
+            android:textColor="@color/Green" />
+
+        <RadioButton
+            android:id="@+id/r3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="개인 일정"
+            android:textColor="@color/Blue" />
+    </RadioGroup>
 </LinearLayout>

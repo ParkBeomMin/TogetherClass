@@ -5,10 +5,15 @@ package com.example.park.togetherclass;
  */
 
 public class HomeWork {
-    String homework;
-    int deadLine;
-    public HomeWork(String homework, int deadLine) {
-        this.homework = homework;
-        this.deadLine = deadLine;
+    String Name;
+    String HomeWork;
+    String DeadLine;
+
+    public HomeWork(String name, String homeWork, String deadLine) {
+        this.Name = name;
+        this.HomeWork = homeWork;
+        this.DeadLine = deadLine;
     }
+
+
 }

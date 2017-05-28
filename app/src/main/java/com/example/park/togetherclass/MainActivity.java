@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private long lastTimeBackPressed;
     boolean auto;
+    String Nick;
+    LinearLayout l1, l2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +33,20 @@ public class MainActivity extends AppCompatActivity {
     void init() {
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         auto = info.getBoolean("auto", false);
+        Nick = info.getString("Nick", null);
+        if(Nick.equals("교수님")) {
+            l1.setVisibility(View.GONE);
+            l2.setVisibility(View.VISIBLE);
+        }
         if (auto) {
             Snackbar.make(getWindow().getDecorView().getRootView(), "자동로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
         }
         else {
             Snackbar.make(getWindow().getDecorView().getRootView(), "로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
         }
+
+        l1 = (LinearLayout) findViewById(R.id.StudentMain);
+        l2 = (LinearLayout) findViewById(R.id.ProfessorMain);
     }
 
     public void MyOnClick(View v) {
@@ -43,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.MClassHourBtn:
                 final int[] SelectSubject = new int[1];
-                final String[] Subject = {"모앱", "디비", "컴구"};
+                final String[] Subject = {"모앱", "디비", "컴구","OS", "알고리즘"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("어떤 과목의 수업입니까?")
                         .setSingleChoiceItems(Subject, 0, new DialogInterface.OnClickListener() {
