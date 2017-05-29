@@ -36,9 +36,8 @@ public class HomeWorkActivity extends AppCompatActivity {
     RadioButton r1, r2, r3;
     Button DdayBtn;
     ListView listView;
-    ArrayList<String> arrayList = new ArrayList<String>();
     ArrayList<HomeWork> homeWorkArrayList = new ArrayList<HomeWork>();
-    ArrayAdapter<String> adapter;
+    HomeWorkAdapter homeWorkAdapter;
     final String MYPATH = getExternalPath() + "TC";
     int PickYear, PickMonth, PickDay;
     int todayYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -57,8 +56,8 @@ public class HomeWorkActivity extends AppCompatActivity {
     void init() {
         makeDir();
         listView = (ListView) findViewById(R.id.HomeWorkListView);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-        listView.setAdapter(adapter);
+        homeWorkAdapter = new HomeWorkAdapter(homeWorkArrayList, getApplication());
+        listView.setAdapter(homeWorkAdapter);
     }
 
     void init2(View view) {
@@ -89,10 +88,10 @@ public class HomeWorkActivity extends AppCompatActivity {
                         .setNegativeButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                File file = new File(MYPATH + "/" + arrayList.get(position).toString());
+                                File file = new File(MYPATH + "/" + homeWorkArrayList.get(position).Name);
                                 file.delete();
-                                arrayList.remove(position);
-                                adapter.notifyDataSetChanged();
+                                homeWorkArrayList.remove(position);
+                                homeWorkAdapter.notifyDataSetChanged();
                             }
                         })
                         .setPositiveButton("취소", null)
@@ -113,12 +112,10 @@ public class HomeWorkActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             try {
-                                WriteData = e1.getText().toString() + "\n" + RadioCheck() + "\n" + PickYear + PickMonth + PickDay + "\n";
+                                WriteData = e1.getText().toString() + "\n" + RadioCheck() + "\n" + PickYear +"-"+ PickMonth +"-"+ PickDay + "\n";
                                 BufferedWriter bw = new BufferedWriter(new FileWriter(MYPATH + "/" + e1.getText().toString(), false));
                                 bw.write(WriteData);
                                 bw.close();
-//                                arrayList.add(e1.getText().toString());
-//                                adapter.notifyDataSetChanged();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -127,13 +124,15 @@ public class HomeWorkActivity extends AppCompatActivity {
                                 BufferedReader br = new BufferedReader(new FileReader(MYPATH + "/" + e1.getText().toString()));
                                 String readStr = "";
                                 String str = null;
-                                while((str = br.readLine()) != null) {
+                                while ((str = br.readLine()) != null) {
                                     readStr += str + "\n";
                                 }
                                 br.close();
                                 String s[] = readStr.split("\n");
-                                HomeWork homeWork = new HomeWork(s[0],s[1],s[2]);
-                                Toast.makeText(HomeWorkActivity.this, readStr, Toast.LENGTH_LONG).show();
+                                HomeWork homeWork = new HomeWork(s[0], s[1], s[2]);
+                                Log.d("BEOM5", s[0] + s[1] + s[2]);
+                                homeWorkArrayList.add(homeWork);
+                                homeWorkAdapter.notifyDataSetChanged();
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {
@@ -180,13 +179,28 @@ public class HomeWorkActivity extends AppCompatActivity {
 
     void LoadList() {
         File[] files = new File(MYPATH).listFiles();
-        String str = "";
+        String fname = "";
         for (File f : files) {
-            str = f.getName();
-            arrayList.add(str);
-            str = "";
+            fname = f.getName();
+            Log.d("BEOM6", fname);
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(MYPATH + "/" + fname));
+                String readStr = "";
+                String str = null;
+                while ((str = br.readLine()) != null) {
+                    readStr += str + "\n";
+                }
+                br.close();
+                String s[] = readStr.split("\n");
+                HomeWork homeWork = new HomeWork(s[0], s[1], s[2]);
+                homeWorkArrayList.add(homeWork);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            fname="";
         }
-//        Collections.sort(arrayList, comparator);
     }
 
     public String getExternalPath() {
