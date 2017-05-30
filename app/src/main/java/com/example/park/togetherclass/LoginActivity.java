@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.icu.util.Calendar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.os.CancellationSignal;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -27,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox c1;
     String Name, Nick, Pw;
     Boolean auto;
+    String Time;
 
 
     @Override
@@ -51,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         Nick = info.getString("Nick", null);
         Pw = info.getString("Pw", null);
         auto = info.getBoolean("auto", false);
+        Time = info.getString("Time", null);
         NameEt = (EditText) findViewById(R.id.nameEt);
         NickEt = (EditText) findViewById(R.id.nickEt);
         PwEt = (EditText) findViewById(R.id.pwEt);
@@ -61,12 +65,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 t1 = (TextView) findViewById(R.id.NameTv);
                 t2 = (TextView) findViewById(R.id.NickTv);
-                if(b) {
+                if (b) {
                     t1.setText("수업코드");
                     t2.setVisibility(View.GONE);
                     NickEt.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     t1.setText("NAME");
                     t2.setVisibility(View.VISIBLE);
                     NickEt.setVisibility(View.VISIBLE);
@@ -93,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
     public void MyOnClick(View v) {
         switch (v.getId()) {
             case R.id.loginButton:
-                if(r2.isChecked()) {
+                if (r2.isChecked()) {
                     NickEt.setText("교수님");
                 }
                 if (NameEt.getText().toString().length() == 0 || NickEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
@@ -111,15 +114,15 @@ public class LoginActivity extends AppCompatActivity {
                         PwEt.setHint("비밀번호를 입력해주세요!");
                     }
                 } else {
-                    if (c1.isChecked()) {
-                        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = info.edit();
-                        editor.putString("Name", NameEt.getText().toString());
-                        editor.putString("Nick", NickEt.getText().toString());
-                        editor.putString("Pw", PwEt.getText().toString());
+                    SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = info.edit();
+                    editor.putString("Name", NameEt.getText().toString());
+                    editor.putString("Nick", NickEt.getText().toString());
+                    editor.putString("Pw", PwEt.getText().toString());
+                    if (c1.isChecked())
                         editor.putBoolean("auto", true);
-                        editor.commit();
-                    }
+                    editor.commit();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("Name", NameEt.getText().toString());
                     intent.putExtra("Nick", NickEt.getText().toString());

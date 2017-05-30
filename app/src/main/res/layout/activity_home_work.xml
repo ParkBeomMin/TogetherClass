@@ -16,22 +16,24 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="과제현황입니다."
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:layout_marginBottom="20dp"/>
+
+    <ListView
+        android:layout_weight="1"
+        android:divider="#2e2e2e"
+        android:dividerHeight="1dp"
+        android:id="@+id/HomeWorkListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
 
     <Button
+        android:layout_marginBottom="30dp"
         android:id="@+id/HomeWorkAddBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="MyOnClick"
         android:text="등록하기"
         android:textSize="20dp" />
-
-    <ListView
-        android:divider="#2e2e2e"
-        android:dividerHeight="1dp"
-        android:id="@+id/HomeWorkListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ListView>
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,11 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     private long lastTimeBackPressed;
     boolean auto;
-    String Nick;
+    String Nick, Name, Time;
     LinearLayout l1, l2;
 
     @Override
@@ -34,14 +36,21 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         auto = info.getBoolean("auto", false);
         Nick = info.getString("Nick", null);
-        if(Nick.equals("교수님")) {
-            l1.setVisibility(View.GONE);
-            l2.setVisibility(View.VISIBLE);
-        }
+        Name = info.getString("Name", null);
+        Time = info.getString("Time", null);
+        Log.d("BEOM7", Nick + Name + Time);
+        SharedPreferences.Editor editor = info.edit();
+        editor.putString("Time", java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) +" "
+                + Calendar.getInstance().get(Calendar.HOUR) +":"+ Calendar.getInstance().get(Calendar.MINUTE) +":"+ Calendar.getInstance().get(Calendar.SECOND));
+        editor.commit();
+        if (Nick != null)
+            if (Nick.equals("교수님")) {
+                l1.setVisibility(View.GONE);
+                l2.setVisibility(View.VISIBLE);
+            }
         if (auto) {
             Snackbar.make(getWindow().getDecorView().getRootView(), "자동로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             Snackbar.make(getWindow().getDecorView().getRootView(), "로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
         }
 
@@ -54,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.MClassHourBtn:
                 final int[] SelectSubject = new int[1];
-                final String[] Subject = {"모앱", "디비", "컴구","OS", "알고리즘"};
+                final String[] Subject = {"모앱", "디비", "컴구", "OS", "알고리즘"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("어떤 과목의 수업입니까?")
                         .setSingleChoiceItems(Subject, 0, new DialogInterface.OnClickListener() {
@@ -104,14 +113,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        menu.add(0, 1, 0, "내 정보");
-        menu.add(0, 1, 0, "로그아웃");
+        menu.add(0, 1, 0, "내 정보");
+        menu.add(0, 2, 0, "로그아웃");
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
+            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+            intent.putExtra("Name", Name);
+            intent.putExtra("Nick", Nick);
+            intent.putExtra("Time", Time);
+            startActivity(intent);
+        } else if (item.getItemId() == 2) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.putExtra("Logout", "Logout");
             SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
