@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/AFSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></Spinner>
+    
+    <EditText
+        android:id="@+id/AFTitleEt"
+        android:textSize="30dp"
+        android:hint="Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:singleLine="true"/>
+    <EditText
+        android:id="@+id/AFContentEt"
+        android:gravity="top"
+        android:hint="Contents..."
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>

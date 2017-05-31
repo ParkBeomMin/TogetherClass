@@ -22,4 +22,23 @@
         <item>융합공학과</item>
     </string-array>
 
+    <string-array name="Free">
+        <item>전체</item>
+        <item>모앱</item>
+        <item>디비</item>
+        <item>컴구</item>
+        <item>운영체제</item>
+        <item>데통</item>
+        <item>멀미</item>
+        <item>알고리즘</item>
+    </string-array>
+    <string-array name="AddFree">
+        <item>모앱</item>
+        <item>디비</item>
+        <item>컴구</item>
+        <item>운영체제</item>
+        <item>데통</item>
+        <item>멀미</item>
+        <item>알고리즘</item>
+    </string-array>
 </resources>

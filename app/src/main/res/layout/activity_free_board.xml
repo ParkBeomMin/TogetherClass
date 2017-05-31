@@ -6,28 +6,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.park.togetherclass.FreeBoardActivity">
 
-    <TextView
-        android:gravity="center_horizontal"
-        android:textSize="20dp"
-        android:text="000과목 자유게시판입니다."
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:onClick="MyOnClick"
-        android:id="@+id/WriteBtn"
-        android:text="글 작성하기"
-        android:textSize="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <ListView
-        android:id="@+id/FreeBoardList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<TextView
+    android:gravity="center"
+    android:textSize="20dp"
+    android:text="자유게시판"
+    android:layout_marginBottom="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 
-    </ListView>
+    <Spinner
+        android:id="@+id/FreeSpin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </Spinner>
+    <ListView
+        android:layout_weight="1"
+        android:id="@+id/freelist"
+        android:dividerHeight="1dp"
+        android:divider="#c1c1c1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+    <Button
+        android:text="글쓰기"
+        android:onClick="MyOnClick"
+        android:id="@+id/FreeRegiBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
