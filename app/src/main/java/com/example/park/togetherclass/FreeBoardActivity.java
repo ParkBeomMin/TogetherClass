@@ -2,6 +2,7 @@ package com.example.park.togetherclass;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -36,12 +38,15 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class FreeBoardActivity extends AppCompatActivity {
-    Spinner spinner, spinner1;
+    Spinner spinner;
     ArrayAdapter adapter;
     ListView l1;
     ArrayList<Free> freeArrayList = new ArrayList<Free>();
+    ArrayList<Free> selectfreeArrayList = new ArrayList<Free>();
     FreeAdapter freeAdapter;
-    String Nick, Pw;
+    FreeAdapter selecfreeAdapter;
+
+    String Nick, Name, Pw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +55,12 @@ public class FreeBoardActivity extends AppCompatActivity {
         init();
         ListViewMethod();
         new BackgroundTask().execute();
+        SpinnerMethod();
     }
 
     void init() {
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+        Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
         Pw = info.getString("Pw", null);
 
@@ -63,20 +70,137 @@ public class FreeBoardActivity extends AppCompatActivity {
 
         l1 = (ListView) findViewById(R.id.freelist);
         freeAdapter = new FreeAdapter(freeArrayList, getApplicationContext());
+        selecfreeAdapter = new FreeAdapter(selectfreeArrayList, getApplicationContext());
         l1.setAdapter(freeAdapter);
+    }
+
+    void SpinnerMethod() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectfreeArrayList.clear();
+                l1.setAdapter(selecfreeAdapter);
+                for (int i = 0; i < freeArrayList.size(); i++) {
+                    switch (((TextView)view).getText().toString()) {
+                        case "전체":
+                            l1.setAdapter(freeAdapter);
+                            break;
+                        case "모앱":
+                            if (freeArrayList.get(i).Title.contains("[모앱]")) {
+                                selectfreeArrayList.add(freeArrayList.get(i));
+                            }
+                            selecfreeAdapter.notifyDataSetChanged();
+                            break;
+                        case "컴구":
+                            if (freeArrayList.get(i).Title.contains("[컴구]")) {
+                                selectfreeArrayList.add(freeArrayList.get(i));
+                            }
+                            selecfreeAdapter.notifyDataSetChanged();
+
+                            break;
+                        case "디비":
+                            if (freeArrayList.get(i).Title.contains("[디비]")) {
+                                selectfreeArrayList.add(freeArrayList.get(i));
+                            }
+                            selecfreeAdapter.notifyDataSetChanged();
+
+                            break;
+                        case "운영체제":
+                            if (freeArrayList.get(i).Title.contains("[운영체제]")) {
+                                selectfreeArrayList.add(freeArrayList.get(i));
+                            }
+                            selecfreeAdapter.notifyDataSetChanged();
+
+                            break;
+                        case "데통":
+                            if (freeArrayList.get(i).Title.contains("[데통]")) {
+                                selectfreeArrayList.add(freeArrayList.get(i));
+                            }
+                            selecfreeAdapter.notifyDataSetChanged();
+
+                            break;
+                        case "멀미":
+                            if (freeArrayList.get(i).Title.contains("[멀미]")) {
+                                selectfreeArrayList.add(freeArrayList.get(i));
+                            }
+                            selecfreeAdapter.notifyDataSetChanged();
+
+                            break;
+                        case "알고리즘":
+                            if (freeArrayList.get(i).Title.contains("[알고리즘]")) {
+                                selectfreeArrayList.add(freeArrayList.get(i));
+                            }
+                            selecfreeAdapter.notifyDataSetChanged();
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     void ListViewMethod() {
         l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                freeAdapter.setContent(1);
+                freeAdapter.setContent(position);
+                selecfreeAdapter.setContent(position);
+                selecfreeAdapter.notifyDataSetChanged();
+                freeAdapter.notifyDataSetChanged();
             }
         });
         l1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final String title = freeArrayList.get(position).Title;
+                final String nick = freeArrayList.get(position).Nick;
+                final String date = freeArrayList.get(position).Date;
+                final String pw = freeArrayList.get(position).Pw;
+                LayoutInflater inflater = getLayoutInflater();
+                View deleteView = inflater.inflate(R.layout.delete_free_list, null);
+                final TextView t1 = (TextView) deleteView.findViewById(R.id.deleteNickTv);
+                final EditText e1 = (EditText) deleteView.findViewById(R.id.deletePwEt);
+                t1.setText("작성자 : " + nick + "님");
+                AlertDialog.Builder builder = new AlertDialog.Builder(FreeBoardActivity.this);
+                builder.setTitle("삭제")
+                        .setView(deleteView)
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Response.Listener<String> responseListener = new Response.Listener<String>() {
 
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            boolean success = false;
+                                            if (pw.equals(e1.getText().toString())) {
+                                                success = true;
+                                            }
+                                            if (success) {
+                                                Toast.makeText(getApplicationContext(), "삭제되었습니다.", Toast.LENGTH_LONG).show();
+                                                freeAdapter.notifyDataSetChanged();
+                                                selecfreeAdapter.notifyDataSetChanged();
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        BackgroundTask task = new BackgroundTask();
+                                        task.execute();
+                                    }
+                                };
+                                FreeDeleteRequest deleteRequest = new FreeDeleteRequest(title, nick, date, e1.getText().toString(), responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(FreeBoardActivity.this);
+                                queue.add(deleteRequest);
+                            }
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
                 return true;
             }
         });
@@ -97,24 +221,26 @@ public class FreeBoardActivity extends AppCompatActivity {
             builder.setTitle("등록하기")
                     .setView(view)
                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
-                                public void onResponse(String response) {
-                                    Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
-                                    BackgroundTask task = new BackgroundTask();
-                                    task.execute();
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
+                                            BackgroundTask task = new BackgroundTask();
+                                            task.execute();
+                                        }
+                                    };
+                                    Subject[0] = spinner1.getSelectedItem().toString();
+                                    Title[0] = "[" + Subject[0] + "]" + e1.getText().toString();
+                                    Log.d("BEOM8", Nick + e1.getText().toString() + e2.getText().toString() + date + Pw);
+                                    FreeBoardRequest write = new FreeBoardRequest(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0], responseListener);
+                                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                                    queue.add(write);
                                 }
-                            };
-                            Subject[0] = spinner1.getSelectedItem().toString();
-                            Title[0] = "[" + Subject[0] + "]" + e1.getText().toString();
-                            Log.d("BEOM8", Nick + e1.getText().toString() + e2.getText().toString() + date + Pw);
-                            FreeBoardRequest write = new FreeBoardRequest(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0], responseListener);
-                            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                            queue.add(write);
-                        }
-                    })
+                            }
+
+                    )
                     .setNegativeButton("취소", null)
                     .show();
         }
@@ -160,6 +286,7 @@ public class FreeBoardActivity extends AppCompatActivity {
         public void onPostExecute(String result) {
             try {
                 freeArrayList.clear();
+                selectfreeArrayList.clear();
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
                 int count = 0;
@@ -175,13 +302,13 @@ public class FreeBoardActivity extends AppCompatActivity {
                     freeArrayList.add(free);
                     count++;
                 }
-                adapter.notifyDataSetChanged();
+
+                freeAdapter.notifyDataSetChanged();
+                selecfreeAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
-
     }
 
     public String doCurrentDate() {

@@ -1,6 +1,7 @@
 package com.example.park.togetherclass;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class FreeAdapter extends BaseAdapter {
     ArrayList<Free> arrayList = new ArrayList<Free>();
     Context c;
-    int op;
+    int op = -1;
 
     public FreeAdapter(ArrayList<Free> arrayList, Context c) {
         this.arrayList = arrayList;
@@ -44,8 +45,10 @@ public class FreeAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(c);
-        if(convertView == null)
-        convertView = inflater.inflate(R.layout.free_list, null);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.free_list, null);
+        }
+
         TextView t1 = (TextView) convertView.findViewById(R.id.freetitle);
         TextView t2 = (TextView) convertView.findViewById(R.id.freenick);
         TextView t3 = (TextView) convertView.findViewById(R.id.freedate);
@@ -57,9 +60,14 @@ public class FreeAdapter extends BaseAdapter {
         t2.setText(one.Nick);
         t3.setText(one.Date);
         t4.setText(one.Content);
-        if(op == 1) {
+        Log.d("BEOM9", "op : "+op +"posi : " + position);
+        if (op == position) {
             t4.setVisibility(View.VISIBLE);
             l1.setVisibility(View.VISIBLE);
+        }
+        else{
+            t4.setVisibility(View.GONE);
+            l1.setVisibility(View.GONE);
         }
         return convertView;
     }
