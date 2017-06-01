@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="000과목 공지사항입니다."
+        android:text="공지사항"
         android:textSize="20dp" />
 
     <Button

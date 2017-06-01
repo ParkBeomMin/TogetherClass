@@ -53,8 +53,8 @@ public class FreeBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_free_board);
         init();
-        ListViewMethod();
         new BackgroundTask().execute();
+        ListViewMethod();
         SpinnerMethod();
     }
 

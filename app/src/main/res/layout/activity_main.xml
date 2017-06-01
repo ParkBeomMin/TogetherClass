@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="MyonClick"
+                android:onClick="MyOnClick"
                 android:text="미팅 신청" />
 
             <Button
