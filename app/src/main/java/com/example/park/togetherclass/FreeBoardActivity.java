@@ -53,9 +53,9 @@ public class FreeBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_free_board);
         init();
+        SpinnerMethod();
         new BackgroundTask().execute();
         ListViewMethod();
-        SpinnerMethod();
     }
 
     void init() {
@@ -80,69 +80,53 @@ public class FreeBoardActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectfreeArrayList.clear();
-                l1.setAdapter(selecfreeAdapter);
-                for (int i = 0; i < freeArrayList.size(); i++) {
+//                for (int i = 0; i < freeArrayList.size(); i++) {
                     switch (((TextView) view).getText().toString()) {
                         case "전체":
-                            selectfreeArrayList.add(freeArrayList.get(i));
-                            selecfreeAdapter.notifyDataSetChanged();
+                            l1.setAdapter(freeAdapter);
+//                            selectfreeArrayList.clear();
+//                            l1.setAdapter(selecfreeAdapter);
+//                            selectfreeArrayList.add(freeArrayList.get(i));
+//                            selecfreeAdapter.notifyDataSetChanged();
                             break;
-                        case "모앱":
-                            if (freeArrayList.get(i).Title.contains("[모앱]")) {
-                                selectfreeArrayList.add(freeArrayList.get(i));
-                            }
-                            selecfreeAdapter.notifyDataSetChanged();
+                        case "모앱":setList("[모앱]");
                             break;
                         case "컴구":
-                            if (freeArrayList.get(i).Title.contains("[컴구]")) {
-                                selectfreeArrayList.add(freeArrayList.get(i));
-                            }
-                            selecfreeAdapter.notifyDataSetChanged();
-
+                            setList("[컴구]");
                             break;
                         case "디비":
-                            if (freeArrayList.get(i).Title.contains("[디비]")) {
-                                selectfreeArrayList.add(freeArrayList.get(i));
-                            }
-                            selecfreeAdapter.notifyDataSetChanged();
-
+                            setList("[디비]");
                             break;
-                        case "운영체제":
-                            if (freeArrayList.get(i).Title.contains("[운영체제]")) {
-                                selectfreeArrayList.add(freeArrayList.get(i));
-                            }
-                            selecfreeAdapter.notifyDataSetChanged();
-
+                        case "운영체제":setList("[운영체제]");
                             break;
                         case "데통":
-                            if (freeArrayList.get(i).Title.contains("[데통]")) {
-                                selectfreeArrayList.add(freeArrayList.get(i));
-                            }
-                            selecfreeAdapter.notifyDataSetChanged();
-
+                            setList("[데통]");
                             break;
                         case "멀미":
-                            if (freeArrayList.get(i).Title.contains("[멀미]")) {
-                                selectfreeArrayList.add(freeArrayList.get(i));
-                            }
-                            selecfreeAdapter.notifyDataSetChanged();
+                            setList("[멀미]");
                             break;
                         case "알고리즘":
-                            if (freeArrayList.get(i).Title.contains("[알고리즘]")) {
-                                selectfreeArrayList.add(freeArrayList.get(i));
-                            }
-                            selecfreeAdapter.notifyDataSetChanged();
+                            setList("[알고리즘]");
                             break;
                     }
                 }
-            }
-
+//            }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+    }
+
+    void setList(String s) {
+        selectfreeArrayList.clear();
+        l1.setAdapter(selecfreeAdapter);
+        for (int i = 0; i < freeArrayList.size(); i++) {
+            if (freeArrayList.get(i).Title.contains(s)) {
+                selectfreeArrayList.add(freeArrayList.get(i));
+            }
+            selecfreeAdapter.notifyDataSetChanged();
+        }
     }
 
     void ListViewMethod() {
@@ -311,6 +295,7 @@ public class FreeBoardActivity extends AppCompatActivity {
             }
         }
     }
+
     public String doCurrentDate() {
         int nYear;
         String nMonth;
@@ -325,19 +310,19 @@ public class FreeBoardActivity extends AppCompatActivity {
         if (nMonth.length() < 2) {
             nMonth = "0" + nMonth;
         }
-        nDay = calendar.get(Calendar.DAY_OF_MONTH)+"";
+        nDay = calendar.get(Calendar.DAY_OF_MONTH) + "";
         if (nDay.length() < 2) {
             nDay = "0" + nDay;
         }
-        nTime = calendar.get(Calendar.HOUR_OF_DAY)+"";
+        nTime = calendar.get(Calendar.HOUR_OF_DAY) + "";
         if (nTime.length() < 2) {
             nTime = "0" + nTime;
         }
-        nMin = calendar.get(Calendar.MINUTE)+"";
+        nMin = calendar.get(Calendar.MINUTE) + "";
         if (nMin.length() < 2) {
             nMin = "0" + nMin;
         }
-        nSec = calendar.get(Calendar.SECOND)+"";
+        nSec = calendar.get(Calendar.SECOND) + "";
         if (nSec.length() < 2) {
             nSec = "0" + nSec;
         }

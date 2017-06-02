@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
+import android.service.voice.VoiceInteractionSession;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,26 +15,52 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity {
+    Button b1, b2, b3;
     private long lastTimeBackPressed;
     boolean auto;
     String Nick, Name, Time;
     LinearLayout l1, l2;
+    ListView listView;
+    ArrayList<String> arrayList = new ArrayList<String>();
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        new ReceiveWeather().execute();
     }
 
     void init() {
+//        l1 = (LinearLayout) findViewById(R.id.StudentMain);
+//        l2 = (LinearLayout) findViewById(R.id.ProfessorMain);
+        b1 = (Button) findViewById(R.id.MFreeBoardBtn);
+        b2 = (Button) findViewById(R.id.MMeetingBtn);
+        listView = (ListView) findViewById(R.id.weather);
+        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, arrayList);
+        listView.setAdapter(adapter);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         auto = info.getBoolean("auto", false);
         Nick = info.getString("Nick", null);
@@ -40,22 +68,21 @@ public class MainActivity extends AppCompatActivity {
         Time = info.getString("Time", null);
         Log.d("BEOM7", Nick + Name + Time);
         SharedPreferences.Editor editor = info.edit();
-        editor.putString("Time", java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) +" "
-                + Calendar.getInstance().get(Calendar.HOUR) +":"+ Calendar.getInstance().get(Calendar.MINUTE) +":"+ Calendar.getInstance().get(Calendar.SECOND));
+        editor.putString("Time", java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + " "
+                + Calendar.getInstance().get(Calendar.HOUR) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND));
         editor.commit();
         if (Nick != null)
             if (Nick.equals("교수님")) {
-                l1.setVisibility(View.GONE);
-                l2.setVisibility(View.VISIBLE);
+                b1.setVisibility(View.GONE);
+                b2.setVisibility(View.GONE);
+//                l1.setVisibility(View.GONE);
+//                l2.setVisibility(View.VISIBLE);
             }
         if (auto) {
             Snackbar.make(getWindow().getDecorView().getRootView(), "자동로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(getWindow().getDecorView().getRootView(), "로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
         }
-
-        l1 = (LinearLayout) findViewById(R.id.StudentMain);
-        l2 = (LinearLayout) findViewById(R.id.ProfessorMain);
     }
 
     public void MyOnClick(View v) {
@@ -92,10 +119,10 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this, NoticeActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.MQuestionBtn:
-                intent = new Intent(MainActivity.this, QuestionActivity.class);
-                startActivity(intent);
-                break;
+//            case R.id.MQuestionBtn:
+//                intent = new Intent(MainActivity.this, QuestionActivity.class);
+//                startActivity(intent);
+//                break;
             case R.id.MMeetingBtn:
                 intent = new Intent(MainActivity.this, MeetingActivity.class);
                 startActivity(intent);
@@ -146,6 +173,120 @@ public class MainActivity extends AppCompatActivity {
         }
         Toast.makeText(this, "뒤로 버튼을 한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show();
         lastTimeBackPressed = System.currentTimeMillis();
+    }
+
+    public class ReceiveWeather extends AsyncTask<URL, Integer, Long> {
+
+        ArrayList<Weather> Weathers = new ArrayList<Weather>();
+
+        protected Long doInBackground(URL... urls) {
+
+            String url = "http://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=4127152000";
+
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+
+            Response response = null;
+
+            try {
+                response = client.newCall(request).execute();
+                parseXML(response.body().string());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(Long result) {
+            String data = "";
+
+            for (int i = 0; i < Weathers.size(); i++) {
+                String H = Weathers.get(i).getHour();
+                String D = Weathers.get(i).getDay();
+                if(H.equals("24")){
+                    D = (Integer.parseInt(D)+1)+"";
+                }
+                data =
+                        D + "일 " + H + "시 " +
+                        Weathers.get(i).getTemp() + "도 " +
+                        Weathers.get(i).getWfKor() + " \n강수확률 " +
+                        Weathers.get(i).getPop() + "%";
+                arrayList.add(data);
+            }
+            adapter.notifyDataSetChanged();
+        }
+
+        void parseXML(String xml) {
+            try {
+                String tagName = "";
+                boolean onHour = false;
+                boolean onDay = false;
+                boolean onTem = false;
+                boolean onWfKor = false;
+                boolean onPop = false;
+                boolean onEnd = false;
+                boolean isItemTag1 = false;
+                int i = 0;
+
+                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                XmlPullParser parser = factory.newPullParser();
+
+                parser.setInput(new StringReader(xml));
+
+                int eventType = parser.getEventType();
+
+                while (eventType != XmlPullParser.END_DOCUMENT) {
+                    if (eventType == XmlPullParser.START_TAG) {
+                        tagName = parser.getName();
+                        if (tagName.equals("data")) {
+                            Weathers.add(new Weather());
+                            onEnd = false;
+                            isItemTag1 = true;
+                        }
+                    } else if (eventType == XmlPullParser.TEXT && isItemTag1) {
+                        if (tagName.equals("hour") && !onHour) {
+                            Weathers.get(i).setHour(parser.getText());
+                            onHour = true;
+                        }
+                        if (tagName.equals("day") && !onDay) {
+                            Weathers.get(i).setDay(parser.getText());
+                            onDay = true;
+                        }
+                        if (tagName.equals("temp") && !onTem) {
+                            Weathers.get(i).setTemp(parser.getText());
+                            onTem = true;
+                        }
+                        if (tagName.equals("wfKor") && !onWfKor) {
+                            Weathers.get(i).setWfKor(parser.getText());
+                            onWfKor = true;
+                        }
+                        if (tagName.equals("pop") && !onPop) {
+                            Weathers.get(i).setPop(parser.getText());
+                            onPop = true;
+                        }
+                    } else if (eventType == XmlPullParser.END_TAG) {
+                        if (tagName.equals("s06") && onEnd == false) {
+                            i++;
+                            onHour = false;
+                            onDay = false;
+                            onTem = false;
+                            onWfKor = false;
+                            onPop = false;
+                            isItemTag1 = false;
+                            onEnd = true;
+                        }
+                    }
+
+                    eventType = parser.next();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

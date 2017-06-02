@@ -3,11 +3,13 @@ package com.example.park.togetherclass;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,6 +36,12 @@ public class MeetingActivity extends AppCompatActivity {
     }
 
     void init() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingActivity.this);
+        builder.setTitle("메일보내기 & 사이트 접속하기")
+                .setMessage("짧게 클릭 시 메일보내기\n" +
+                        "길게 클릭 시 사이트 접속")
+                .setNegativeButton("확인", null)
+                .show();
         g1 = (GridView) findViewById(R.id.meetingList);
         adapter = new MeetAdapter(arrayList, getApplication());
         g1.setAdapter(adapter);
@@ -47,6 +55,7 @@ public class MeetingActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.putExtra(Intent.EXTRA_EMAIL, mail);
                 intent.setType("text/plain");
+//                startActivity(intent);
                 startActivity(Intent.createChooser(intent, "Choose Email Client"));
             }
         });
@@ -54,8 +63,13 @@ public class MeetingActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 String site = arrayList.get(position).Site;
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(site));
-                startActivity(intent);
+                if(site.equals("-")){
+                    Toast.makeText(getApplicationContext(), "사이트가 존재하지 않습니다.", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(site));
+                    startActivity(intent);
+                }
                 return true;
             }
         });
@@ -122,4 +136,38 @@ public class MeetingActivity extends AppCompatActivity {
         }
     }
 
+//
+//
+//    class myAsyncTask extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(MeetingActivity.this);
+//            builder.setTitle("메일보내기 & 사이트 접속하기")
+//                    .setMessage("짧게 클릭 시 메일보내기\n" +
+//                    "길게 클릭 시 사이트 접속")
+//            .show();
+//            try {
+//                Thread.sleep(3000);
+//                builder.
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Void... values) {
+//            super.onProgressUpdate(values);
+//        }
+//    }
 }

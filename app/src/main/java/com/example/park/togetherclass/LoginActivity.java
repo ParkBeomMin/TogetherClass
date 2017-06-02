@@ -68,10 +68,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (b) {
                     t1.setText("수업코드");
                     t2.setVisibility(View.GONE);
+                    NickEt.setText("교수님");
                     NickEt.setVisibility(View.GONE);
                 } else {
                     t1.setText("NAME");
                     t2.setVisibility(View.VISIBLE);
+                    NickEt.setText("");
                     NickEt.setVisibility(View.VISIBLE);
                 }
             }
@@ -96,39 +98,68 @@ public class LoginActivity extends AppCompatActivity {
     public void MyOnClick(View v) {
         switch (v.getId()) {
             case R.id.loginButton:
-                if (r2.isChecked()) {
-                    NickEt.setText("교수님");
-                }
-                if (NameEt.getText().toString().length() == 0 || NickEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
-                    if (NameEt.getText().toString().length() == 0) {
-                        NameEt.requestFocus();
-                        NameEt.setHintTextColor(Color.RED);
-                        NameEt.setHint("이름을 입력해주세요!");
-                    } else if (NickEt.getText().toString().length() == 0) {
-                        NickEt.requestFocus();
-                        NickEt.setHintTextColor(Color.RED);
-                        NickEt.setHint("닉네임을 입력해주세요!");
-                    } else if (PwEt.getText().toString().length() == 0) {
-                        PwEt.requestFocus();
-                        PwEt.setHintTextColor(Color.RED);
-                        PwEt.setHint("비밀번호를 입력해주세요!");
-                    }
-                } else {
-                    SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = info.edit();
-                    editor.putString("Name", NameEt.getText().toString());
-                    editor.putString("Nick", NickEt.getText().toString());
-                    editor.putString("Pw", PwEt.getText().toString());
-                    if (c1.isChecked())
-                        editor.putBoolean("auto", true);
-                    editor.commit();
+                if(!NickEt.getText().toString().equals("교수님")) {
+                    if (NameEt.getText().toString().length() == 0 || NickEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
+                        if (NameEt.getText().toString().length() == 0) {
+                            NameEt.requestFocus();
+                            NameEt.setHintTextColor(Color.RED);
+                            NameEt.setHint("이름을 입력해주세요!");
+                        } else if (NickEt.getText().toString().length() == 0) {
+                            NickEt.requestFocus();
+                            NickEt.setHintTextColor(Color.RED);
+                            NickEt.setHint("닉네임을 입력해주세요!");
+                        } else if (PwEt.getText().toString().length() == 0) {
+                            PwEt.requestFocus();
+                            PwEt.setHintTextColor(Color.RED);
+                            PwEt.setHint("비밀번호를 입력해주세요!");
+                        }
+                    } else {
+                        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = info.edit();
+                        editor.putString("Name", NameEt.getText().toString());
+                        editor.putString("Nick", NickEt.getText().toString());
+                        editor.putString("Pw", PwEt.getText().toString());
+                        if (c1.isChecked())
+                            editor.putBoolean("auto", true);
+                        editor.commit();
 
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("Name", NameEt.getText().toString());
-                    intent.putExtra("Nick", NickEt.getText().toString());
-                    intent.putExtra("Pw", PwEt.getText().toString());
-                    startActivity(intent);
-                    finish();
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("Name", NameEt.getText().toString());
+                        intent.putExtra("Nick", NickEt.getText().toString());
+                        intent.putExtra("Pw", PwEt.getText().toString());
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+                else {
+                    if (NameEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
+                        if (NameEt.getText().toString().length() == 0) {
+                            NameEt.requestFocus();
+                            NameEt.setHintTextColor(Color.RED);
+                            NameEt.setHint("수업번호를 입력해주세요!");
+                        }
+                        else if (PwEt.getText().toString().length() == 0) {
+                            PwEt.requestFocus();
+                            PwEt.setHintTextColor(Color.RED);
+                            PwEt.setHint("비밀번호를 입력해주세요!");
+                        }
+                    } else {
+                        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = info.edit();
+                        editor.putString("Name", NameEt.getText().toString());
+                        editor.putString("Nick", NickEt.getText().toString());
+                        editor.putString("Pw", PwEt.getText().toString());
+                        if (c1.isChecked())
+                            editor.putBoolean("auto", true);
+                        editor.commit();
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("Name", NameEt.getText().toString());
+                        intent.putExtra("Nick", NickEt.getText().toString());
+                        intent.putExtra("Pw", PwEt.getText().toString());
+                        startActivity(intent);
+                        finish();
+                    }
                 }
                 break;
         }

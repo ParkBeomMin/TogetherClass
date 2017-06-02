@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -38,7 +39,8 @@ public class NoticeActivity extends AppCompatActivity {
     ListView l1;
     ArrayList<Notice> arrayList = new ArrayList<Notice>();
     NoticeAdapter adapter;
-    String Pw;
+    String Name, Nick, Pw;
+    Button b1;
 
 
     @Override
@@ -51,8 +53,13 @@ public class NoticeActivity extends AppCompatActivity {
     }
 
     void init() {
+        b1 = (Button) findViewById(R.id.NoticeBtn);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+        Name = info.getString("Name", null);
+        Nick = info.getString("Nick", null);
         Pw = info.getString("Pw", null);
+        if(Nick.equals("교수님"))
+            b1.setVisibility(View.VISIBLE);
         l1 = (ListView) findViewById(R.id.NoticeList);
         adapter = new NoticeAdapter(arrayList, getApplication());
         l1.setAdapter(adapter);

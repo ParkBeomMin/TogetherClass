@@ -15,7 +15,7 @@
         android:id="@+id/meetName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="성함"
         android:textSize="20dp" />
 
@@ -23,14 +23,15 @@
         android:id="@+id/meetRoom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="연구실"
         android:textSize="20dp" />
     <TextView
         android:id="@+id/meetSite"
+        android:singleLine="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="사이트"
         android:textSize="20dp" />
 
@@ -39,13 +40,13 @@
         android:layout_width="wrap_content"
 
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="전화번호"
         android:textSize="20dp" />
 
     <TextView
         android:id="@+id/meetEmail"
-
+android:singleLine="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="이메일"
