@@ -70,20 +70,23 @@ public class FreeBoardActivity extends AppCompatActivity {
 
         l1 = (ListView) findViewById(R.id.freelist);
         freeAdapter = new FreeAdapter(freeArrayList, getApplicationContext());
-        selecfreeAdapter = new FreeAdapter(selectfreeArrayList, getApplicationContext());
         l1.setAdapter(freeAdapter);
+        selecfreeAdapter = new FreeAdapter(selectfreeArrayList, getApplicationContext());
+
     }
 
     void SpinnerMethod() {
+//        Toast.makeText(getApplicationContext(), freeArrayList.get(3).Title, Toast.LENGTH_LONG).show();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectfreeArrayList.clear();
                 l1.setAdapter(selecfreeAdapter);
                 for (int i = 0; i < freeArrayList.size(); i++) {
-                    switch (((TextView)view).getText().toString()) {
+                    switch (((TextView) view).getText().toString()) {
                         case "전체":
-                            l1.setAdapter(freeAdapter);
+                            selectfreeArrayList.add(freeArrayList.get(i));
+                            selecfreeAdapter.notifyDataSetChanged();
                             break;
                         case "모앱":
                             if (freeArrayList.get(i).Title.contains("[모앱]")) {
@@ -124,7 +127,6 @@ public class FreeBoardActivity extends AppCompatActivity {
                                 selectfreeArrayList.add(freeArrayList.get(i));
                             }
                             selecfreeAdapter.notifyDataSetChanged();
-
                             break;
                         case "알고리즘":
                             if (freeArrayList.get(i).Title.contains("[알고리즘]")) {
@@ -286,7 +288,7 @@ public class FreeBoardActivity extends AppCompatActivity {
         public void onPostExecute(String result) {
             try {
                 freeArrayList.clear();
-                selectfreeArrayList.clear();
+//                selectfreeArrayList.clear();
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
                 int count = 0;
@@ -302,30 +304,43 @@ public class FreeBoardActivity extends AppCompatActivity {
                     freeArrayList.add(free);
                     count++;
                 }
-
                 freeAdapter.notifyDataSetChanged();
-                selecfreeAdapter.notifyDataSetChanged();
+//                selecfreeAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
     public String doCurrentDate() {
         int nYear;
-        int nMonth;
-        int nDay;
-        int nTime;
-        int nMin;
-        int nSec;
+        String nMonth;
+        String nDay;
+        String nTime;
+        String nMin;
+        String nSec;
         // 현재 날짜 구하기
         Calendar calendar = new GregorianCalendar(Locale.KOREA);
         nYear = calendar.get(Calendar.YEAR);
-        nMonth = calendar.get(Calendar.MONTH) + 1;
-        nDay = calendar.get(Calendar.DAY_OF_MONTH);
-        nTime = calendar.get(Calendar.HOUR_OF_DAY);
-        nMin = calendar.get(Calendar.MINUTE);
-        nSec = calendar.get(Calendar.SECOND);
+        nMonth = (calendar.get(Calendar.MONTH) + 1) + "";
+        if (nMonth.length() < 2) {
+            nMonth = "0" + nMonth;
+        }
+        nDay = calendar.get(Calendar.DAY_OF_MONTH)+"";
+        if (nDay.length() < 2) {
+            nDay = "0" + nDay;
+        }
+        nTime = calendar.get(Calendar.HOUR_OF_DAY)+"";
+        if (nTime.length() < 2) {
+            nTime = "0" + nTime;
+        }
+        nMin = calendar.get(Calendar.MINUTE)+"";
+        if (nMin.length() < 2) {
+            nMin = "0" + nMin;
+        }
+        nSec = calendar.get(Calendar.SECOND)+"";
+        if (nSec.length() < 2) {
+            nSec = "0" + nSec;
+        }
         String strD = nYear + "-" + nMonth + "-" + nDay + " " + nTime + ":" + nMin + ":" + nSec;
         return strD;
     }

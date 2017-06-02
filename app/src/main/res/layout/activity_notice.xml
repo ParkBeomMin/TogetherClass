@@ -19,6 +19,7 @@
         android:textSize="20dp" />
 
     <Button
+        android:onClick="MyOnClick"
         android:id="@+id/NoticeBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
