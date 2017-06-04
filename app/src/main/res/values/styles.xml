@@ -15,4 +15,12 @@
         <item name="colorAccent">@color/Black</item>
     </style>
 
+    <style name="MyActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:inflatedId">@id/action_bar</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColor">@color/Black</item>
+        <item name="colorAccent">@color/Black</item>
+    </style>
+
 </resources>

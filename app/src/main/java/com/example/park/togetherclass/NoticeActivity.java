@@ -2,8 +2,12 @@ package com.example.park.togetherclass;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,7 +39,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class NoticeActivity extends AppCompatActivity {
+public class NoticeActivity extends AppCompatActivity implements ActionBar.TabListener {
     ListView l1;
     ArrayList<Notice> arrayList = new ArrayList<Notice>();
     NoticeAdapter adapter;
@@ -47,6 +51,7 @@ public class NoticeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice);
+        setActionBar();
         init();
         new BackgroundTask().execute();
         ListViewMethod();
@@ -203,5 +208,70 @@ public class NoticeActivity extends AppCompatActivity {
         }
         String strD = nYear + "-" + nMonth + "-" + nDay + " " + nTime + ":" + nMin + ":" + nSec;
         return strD;
+    }
+    void setActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.addTab(actionBar.newTab().setText("메인").setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText("수업시간").setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText("자유게시판").setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText("과목공지").setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText("교수 정보").setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText("포탈").setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText("스케줄").setTabListener(this));
+
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);            //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
+        actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
+        actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
+
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Mint)));
+
+        View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        actionBar.setCustomView(view);
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        Intent intent;
+        if (tab.getText().equals("자유게시판")) {
+            intent = new Intent(NoticeActivity.this, FreeBoardActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("과목공지")) {
+            intent = new Intent(NoticeActivity.this, NoticeActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("교수 정보")) {
+            intent = new Intent(NoticeActivity.this, MeetingActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("포탈")) {
+            intent = new Intent(NoticeActivity.this, PotalActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("스케줄")) {
+            intent = new Intent(NoticeActivity.this, HomeWorkActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("수업시간")) {
+            intent = new Intent(NoticeActivity.this, ClassHourActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("메인")) {
+            intent = new Intent(NoticeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
     }
 }

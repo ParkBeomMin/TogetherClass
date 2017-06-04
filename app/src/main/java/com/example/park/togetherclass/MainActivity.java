@@ -5,9 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.service.voice.VoiceInteractionSession;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private long lastTimeBackPressed;
     boolean auto;
     String Nick, Name, Time;
-    LinearLayout l1, l2;
     ListView listView;
     ArrayList<String> arrayList = new ArrayList<String>();
     ArrayAdapter<String> adapter;
@@ -49,13 +51,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setActionBar();
         init();
         new ReceiveWeather().execute();
     }
 
     void init() {
-//        l1 = (LinearLayout) findViewById(R.id.StudentMain);
-//        l2 = (LinearLayout) findViewById(R.id.ProfessorMain);
         b1 = (Button) findViewById(R.id.MFreeBoardBtn);
         b2 = (Button) findViewById(R.id.MMeetingBtn);
         listView = (ListView) findViewById(R.id.weather);
@@ -75,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
             if (Nick.equals("교수님")) {
                 b1.setVisibility(View.GONE);
                 b2.setVisibility(View.GONE);
-//                l1.setVisibility(View.GONE);
-//                l2.setVisibility(View.VISIBLE);
             }
         if (auto) {
             Snackbar.make(getWindow().getDecorView().getRootView(), "자동로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
@@ -119,10 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this, NoticeActivity.class);
                 startActivity(intent);
                 break;
-//            case R.id.MQuestionBtn:
-//                intent = new Intent(MainActivity.this, QuestionActivity.class);
-//                startActivity(intent);
-//                break;
             case R.id.MMeetingBtn:
                 intent = new Intent(MainActivity.this, MeetingActivity.class);
                 startActivity(intent);
@@ -175,6 +170,20 @@ public class MainActivity extends AppCompatActivity {
         lastTimeBackPressed = System.currentTimeMillis();
     }
 
+    void setActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);            //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
+        actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
+        actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
+
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Mint)));
+
+        View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        actionBar.setCustomView(view);
+    }
+
+
     public class ReceiveWeather extends AsyncTask<URL, Integer, Long> {
 
         ArrayList<Weather> Weathers = new ArrayList<Weather>();
@@ -203,18 +212,13 @@ public class MainActivity extends AppCompatActivity {
 
         protected void onPostExecute(Long result) {
             String data = "";
-
             for (int i = 0; i < Weathers.size(); i++) {
-                String H = Weathers.get(i).getHour();
-                String D = Weathers.get(i).getDay();
-                if(H.equals("24")){
-                    D = (Integer.parseInt(D)+1)+"";
-                }
                 data =
-                        D + "일 " + H + "시 " +
-                        Weathers.get(i).getTemp() + "도 " +
-                        Weathers.get(i).getWfKor() + " \n강수확률 " +
-                        Weathers.get(i).getPop() + "%";
+                        java.util.Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + Integer.parseInt(Weathers.get(i).getDay()) + "일 " +
+                                Weathers.get(i).getHour() + "시 " +
+                                Weathers.get(i).getTemp() + "도 " +
+                                Weathers.get(i).getWfKor() + " \n강수확률 " +
+                                Weathers.get(i).getPop() + "%";
                 arrayList.add(data);
             }
             adapter.notifyDataSetChanged();

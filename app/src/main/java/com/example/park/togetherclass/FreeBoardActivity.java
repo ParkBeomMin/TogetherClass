@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,7 +40,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class FreeBoardActivity extends AppCompatActivity {
+public class FreeBoardActivity extends AppCompatActivity implements ActionBar.TabListener {
     Spinner spinner;
     ArrayAdapter adapter;
     ListView l1;
@@ -52,9 +55,11 @@ public class FreeBoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_free_board);
+        setActionBar();
         init();
         SpinnerMethod();
         new BackgroundTask().execute();
+        setList("");
         ListViewMethod();
     }
 
@@ -70,8 +75,9 @@ public class FreeBoardActivity extends AppCompatActivity {
 
         l1 = (ListView) findViewById(R.id.freelist);
         freeAdapter = new FreeAdapter(freeArrayList, getApplicationContext());
-        l1.setAdapter(freeAdapter);
+//        l1.setAdapter(freeAdapter);
         selecfreeAdapter = new FreeAdapter(selectfreeArrayList, getApplicationContext());
+//        setList("");
 
     }
 
@@ -81,36 +87,40 @@ public class FreeBoardActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                for (int i = 0; i < freeArrayList.size(); i++) {
-                    switch (((TextView) view).getText().toString()) {
-                        case "전체":
-                            l1.setAdapter(freeAdapter);
-//                            selectfreeArrayList.clear();
+                switch (((TextView) view).getText().toString()) {
+                    case "전체":
+                        setList("");
+//                        l1.setAdapter(freeAdapter);
+//                            selectfreeArrayListw32.clear();
 //                            l1.setAdapter(selecfreeAdapter);
 //                            selectfreeArrayList.add(freeArrayList.get(i));
 //                            selecfreeAdapter.notifyDataSetChanged();
-                            break;
-                        case "모앱":setList("[모앱]");
-                            break;
-                        case "컴구":
-                            setList("[컴구]");
-                            break;
-                        case "디비":
-                            setList("[디비]");
-                            break;
-                        case "운영체제":setList("[운영체제]");
-                            break;
-                        case "데통":
-                            setList("[데통]");
-                            break;
-                        case "멀미":
-                            setList("[멀미]");
-                            break;
-                        case "알고리즘":
-                            setList("[알고리즘]");
-                            break;
-                    }
+                        break;
+                    case "모앱":
+                        setList("모앱");
+                        break;
+                    case "컴구":
+                        setList("컴구");
+                        break;
+                    case "디비":
+                        setList("디비");
+                        break;
+                    case "운영체제":
+                        setList("운영체제");
+                        break;
+                    case "데통":
+                        setList("데통");
+                        break;
+                    case "멀미":
+                        setList("멀미");
+                        break;
+                    case "알고리즘":
+                        setList("알고리즘");
+                        break;
                 }
-//            }
+            }
+
+            //            }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -121,11 +131,18 @@ public class FreeBoardActivity extends AppCompatActivity {
     void setList(String s) {
         selectfreeArrayList.clear();
         l1.setAdapter(selecfreeAdapter);
-        for (int i = 0; i < freeArrayList.size(); i++) {
-            if (freeArrayList.get(i).Title.contains(s)) {
+        if (s.equals("")) {
+            for (int i = 0; i < freeArrayList.size(); i++) {
                 selectfreeArrayList.add(freeArrayList.get(i));
             }
             selecfreeAdapter.notifyDataSetChanged();
+        } else {
+            for (int i = 0; i < freeArrayList.size(); i++) {
+                if (freeArrayList.get(i).Subject.contains(s)) {
+                    selectfreeArrayList.add(freeArrayList.get(i));
+                }
+                selecfreeAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -142,10 +159,15 @@ public class FreeBoardActivity extends AppCompatActivity {
         l1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final String title = freeArrayList.get(position).Title;
-                final String nick = freeArrayList.get(position).Nick;
-                final String date = freeArrayList.get(position).Date;
-                final String pw = freeArrayList.get(position).Pw;
+//                final String title = freeArrayList.get(position).Title;
+//                final String nick = freeArrayList.get(position).Nick;
+//                final String date = freeArrayList.get(position).Date;
+//                final String pw = freeArrayList.get(position).Pw;
+                final String title = selectfreeArrayList.get(position).Title;
+                final String nick = selectfreeArrayList.get(position).Nick;
+                final String date = selectfreeArrayList.get(position).Date;
+                final String pw = selectfreeArrayList.get(position).Pw;
+                final int pos = position;
                 LayoutInflater inflater = getLayoutInflater();
                 View deleteView = inflater.inflate(R.layout.delete_free_list, null);
                 final TextView t1 = (TextView) deleteView.findViewById(R.id.deleteNickTv);
@@ -169,7 +191,9 @@ public class FreeBoardActivity extends AppCompatActivity {
                                             if (success) {
                                                 Toast.makeText(getApplicationContext(), "삭제되었습니다.", Toast.LENGTH_LONG).show();
                                                 freeAdapter.notifyDataSetChanged();
+                                                selectfreeArrayList.remove(pos);
                                                 selecfreeAdapter.notifyDataSetChanged();
+                                                new BackgroundTask().execute();
                                             } else {
                                                 Toast.makeText(getApplicationContext(), "비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show();
                                             }
@@ -203,7 +227,8 @@ public class FreeBoardActivity extends AppCompatActivity {
             final EditText e2 = (EditText) view.findViewById(R.id.AFContentEt);
             final String date = doCurrentDate();
             final String[] Subject = {""};
-            final String[] Title = {""};
+            final String[] Title = {""};Subject[0] = spinner1.getSelectedItem().toString();
+            Title[0] = e1.getText().toString();
             builder.setTitle("등록하기")
                     .setView(view)
                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -213,12 +238,14 @@ public class FreeBoardActivity extends AppCompatActivity {
                                         @Override
                                         public void onResponse(String response) {
                                             Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
+                                            selectfreeArrayList.add(new Free(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0]));
+                                            selecfreeAdapter.notifyDataSetChanged();
                                             BackgroundTask task = new BackgroundTask();
                                             task.execute();
                                         }
                                     };
                                     Subject[0] = spinner1.getSelectedItem().toString();
-                                    Title[0] = "[" + Subject[0] + "]" + e1.getText().toString();
+                                    Title[0] = e1.getText().toString();
                                     Log.d("BEOM8", Nick + e1.getText().toString() + e2.getText().toString() + date + Pw);
                                     FreeBoardRequest write = new FreeBoardRequest(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0], responseListener);
                                     RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -272,11 +299,11 @@ public class FreeBoardActivity extends AppCompatActivity {
         public void onPostExecute(String result) {
             try {
                 freeArrayList.clear();
-//                selectfreeArrayList.clear();
+                selectfreeArrayList.clear();
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
                 int count = 0;
-                String freeContent, freeTitle, freeNick, freeDate, freePw;
+                String freeContent, freeTitle, freeNick, freeDate, freePw, freeSubject;
                 while (count < jsonArray.length()) {
                     JSONObject object = jsonArray.getJSONObject(count);
                     freeContent = object.getString("FreeContent");
@@ -284,12 +311,14 @@ public class FreeBoardActivity extends AppCompatActivity {
                     freeNick = object.getString("FreeNick");
                     freeDate = object.getString("FreeDate");
                     freePw = object.getString("FreePw");
-                    Free free = new Free(freeTitle, freeNick, freeDate, freePw, freeContent);
+                    freeSubject = object.getString("FreeSubject");
+                    Free free = new Free(freeTitle, freeNick, freeDate, freePw, freeContent, freeSubject);
                     freeArrayList.add(free);
+                    selectfreeArrayList.add(free);
                     count++;
                 }
                 freeAdapter.notifyDataSetChanged();
-//                selecfreeAdapter.notifyDataSetChanged();
+                selecfreeAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -328,5 +357,71 @@ public class FreeBoardActivity extends AppCompatActivity {
         }
         String strD = nYear + "-" + nMonth + "-" + nDay + " " + nTime + ":" + nMin + ":" + nSec;
         return strD;
+    }
+
+    void setActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//        actionBar.addTab(actionBar.newTab().setText("메인").setTabListener(this));
+//        actionBar.addTab(actionBar.newTab().setText("수업시간").setTabListener(this));
+//        actionBar.addTab(actionBar.newTab().setText("자유게시판").setTabListener(this));
+//        actionBar.addTab(actionBar.newTab().setText("과목공지").setTabListener(this));
+//        actionBar.addTab(actionBar.newTab().setText("교수 정보").setTabListener(this));
+//        actionBar.addTab(actionBar.newTab().setText("포탈").setTabListener(this));
+//        actionBar.addTab(actionBar.newTab().setText("스케줄").setTabListener(this));
+
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);            //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
+        actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
+        actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
+
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Mint)));
+
+        View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        actionBar.setCustomView(view);
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        Intent intent;
+        if (tab.getText().equals("자유게시판")) {
+            intent = new Intent(FreeBoardActivity.this, FreeBoardActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("과목공지")) {
+            intent = new Intent(FreeBoardActivity.this, NoticeActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("교수 정보")) {
+            intent = new Intent(FreeBoardActivity.this, MeetingActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("포탈")) {
+            intent = new Intent(FreeBoardActivity.this, PotalActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("스케줄")) {
+            intent = new Intent(FreeBoardActivity.this, HomeWorkActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("수업시간")) {
+            intent = new Intent(FreeBoardActivity.this, ClassHourActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (tab.getText().equals("메인")) {
+            intent = new Intent(FreeBoardActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
     }
 }

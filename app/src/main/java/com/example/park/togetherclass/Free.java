@@ -10,12 +10,14 @@ public class Free {
     String Date;
     String Pw;
     String Content;
+    String Subject;
 
-    public Free(String title, String nick, String date, String pw, String content) {
+    public Free(String title, String nick, String date, String pw, String content, String subject) {
         this.Title = title;
         this.Nick = nick;
         this.Date = date;
         this.Pw = pw;
         this.Content = content;
+        this.Subject = subject;
     }
 }
