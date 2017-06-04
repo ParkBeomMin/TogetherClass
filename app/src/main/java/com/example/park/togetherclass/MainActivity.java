@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
 
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Mint)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
         actionBar.setCustomView(view);

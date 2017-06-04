@@ -9,4 +9,8 @@
     <color name="Red">#f00</color>
     <color name="Green">#0f0</color>
     <color name="Blue">#00f</color>
+    <color name="MyBlue">#1a75bc</color>
+    <color name="ActionBar">#33304e</color>
+    <color name="Button">#ca9d64</color>
+
 </resources>

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
-public class HomeWorkActivity extends AppCompatActivity implements ActionBar.TabListener {
+public class HomeWorkActivity extends AppCompatActivity {
     EditText e1;
     RadioButton r1, r2, r3;
     Button DdayBtn;
@@ -222,118 +222,15 @@ public class HomeWorkActivity extends AppCompatActivity implements ActionBar.Tab
     }
     void setActionBar() {
         ActionBar actionBar1 = getSupportActionBar();
-        actionBar1.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar1.addTab(actionBar1.newTab().setText("메인").setTabListener(this));
-        actionBar1.addTab(actionBar1.newTab().setText("수업시간").setTabListener(this));
-        actionBar1.addTab(actionBar1.newTab().setText("자유게시판").setTabListener(this));
-        actionBar1.addTab(actionBar1.newTab().setText("과목공지").setTabListener(this));
-        actionBar1.addTab(actionBar1.newTab().setText("교수 정보").setTabListener(this));
-        actionBar1.addTab(actionBar1.newTab().setText("포탈").setTabListener(this));
-        actionBar1.addTab(actionBar1.newTab().setText("스케줄").setTabListener(this));
 
         actionBar1.setDisplayShowCustomEnabled(true);
         actionBar1.setDisplayHomeAsUpEnabled(false);            //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         actionBar1.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar1.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
 
-        actionBar1.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Mint)));
+        actionBar1.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.MyBlue)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
         actionBar1.setCustomView(view);
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        Intent intent;
-        if (tab.getText().equals("자유게시판")) {
-            intent = new Intent(HomeWorkActivity.this, FreeBoardActivity.class);
-            startActivity(intent);
-        } else if (tab.getText().equals("과목공지")) {
-            intent = new Intent(HomeWorkActivity.this, NoticeActivity.class);
-            startActivity(intent);
-        } else if (tab.getText().equals("교수 정보")) {
-            intent = new Intent(HomeWorkActivity.this, MeetingActivity.class);
-            startActivity(intent);
-        } else if (tab.getText().equals("포탈")) {
-            intent = new Intent(HomeWorkActivity.this, PotalActivity.class);
-            startActivity(intent);
-        } else if (tab.getText().equals("스케줄")) {
-            intent = new Intent(HomeWorkActivity.this, HomeWorkActivity.class);
-            startActivity(intent);
-        } else if (tab.getText().equals("수업시간")) {
-            intent = new Intent(HomeWorkActivity.this, ClassHourActivity.class);
-            startActivity(intent);
-        } else if (tab.getText().equals("메인")) {
-            intent = new Intent(HomeWorkActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        Intent intent;
-        if (tab.getText().equals("자유게시판")) {
-            intent = new Intent(HomeWorkActivity.this, FreeBoardActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("과목공지")) {
-            intent = new Intent(HomeWorkActivity.this, NoticeActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("교수 정보")) {
-            intent = new Intent(HomeWorkActivity.this, MeetingActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("포탈")) {
-            intent = new Intent(HomeWorkActivity.this, PotalActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("스케줄")) {
-            intent = new Intent(HomeWorkActivity.this, HomeWorkActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("수업시간")) {
-            intent = new Intent(HomeWorkActivity.this, ClassHourActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("메인")) {
-            intent = new Intent(HomeWorkActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        Intent intent;
-        if (tab.getText().equals("자유게시판")) {
-            intent = new Intent(HomeWorkActivity.this, FreeBoardActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("과목공지")) {
-            intent = new Intent(HomeWorkActivity.this, NoticeActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("교수 정보")) {
-            intent = new Intent(HomeWorkActivity.this, MeetingActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("포탈")) {
-            intent = new Intent(HomeWorkActivity.this, PotalActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("스케줄")) {
-            intent = new Intent(HomeWorkActivity.this, HomeWorkActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("수업시간")) {
-            intent = new Intent(HomeWorkActivity.this, ClassHourActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (tab.getText().equals("메인")) {
-            intent = new Intent(HomeWorkActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 }
