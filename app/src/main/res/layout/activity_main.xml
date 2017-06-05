@@ -38,11 +38,18 @@
             <Button
                 android:id="@+id/MClassHourBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClick="MyOnClick"
                 android:text="수업 시간" />
 
+            <Button
+                android:id="@+id/MFreeBoardBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="MyOnClick"
+                android:text="자유게시판" />
         </LinearLayout>
 
         <LinearLayout
@@ -51,22 +58,22 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/MFreeBoardBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="MyOnClick"
-                android:text="자유 게시판" />
 
             <Button
                 android:id="@+id/MNoticeBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClick="MyOnClick"
                 android:text="과목공지" />
 
+            <Button
+                android:id="@+id/MMeetingBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="MyOnClick"
+                android:text="교수 현황" />
         </LinearLayout>
 
         <LinearLayout
@@ -74,82 +81,24 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <Button
-                android:id="@+id/MMeetingBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="MyOnClick"
-                android:text="미팅 신청" />
 
             <Button
                 android:id="@+id/MHomePageBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClick="MyOnClick"
-                android:text="포탈 바로가기" />
+                android:text="포탈" />
+
+
+            <Button
+                android:layout_weight="1"
+                android:onClick="MyOnClick"
+                android:id="@+id/MHomeWorkBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="스케줄" />
         </LinearLayout>
 
-        <Button
-            android:onClick="MyOnClick"
-            android:id="@+id/MHomeWorkBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="스케줄 등록하기" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ProfessorMain"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/MProfessortv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="000교수님, 안녕하세요!" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
-                android:onClick="MyOnClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="수업 시간" />
-
-            <Button
-                android:onClick="MyOnClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="답변" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
-                android:onClick="MyOnClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="미팅 현황" />
-
-            <Button
-                android:onClick="MyOnClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="과목 공지" />
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

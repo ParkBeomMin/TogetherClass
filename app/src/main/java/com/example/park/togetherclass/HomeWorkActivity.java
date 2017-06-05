@@ -1,11 +1,14 @@
 package com.example.park.togetherclass;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -14,12 +17,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -48,6 +55,9 @@ public class HomeWorkActivity extends AppCompatActivity {
     int todayMonth = (Calendar.getInstance().get(Calendar.MONTH));
     int todayDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     String WriteData;
+    String Name, Nick;
+    Button b1;
+    HorizontalScrollView s1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +69,25 @@ public class HomeWorkActivity extends AppCompatActivity {
     }
 
     void init() {
+        b1 = (Button) findViewById(R.id.GHomebtn);
+        b1.setEnabled(true);
+        b1.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
+        b1.setTextColor(getResources().getColor(R.color.White));
+        s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                s1.smoothScrollBy(700, 0);
+            }
+        }, 200);
         makeDir();
         listView = (ListView) findViewById(R.id.HomeWorkListView);
         homeWorkAdapter = new HomeWorkAdapter(homeWorkArrayList, getApplication());
         listView.setAdapter(homeWorkAdapter);
+
+        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+        Name = info.getString("Name", null);
+        Nick = info.getString("Nick", null);
     }
 
     void init2(View view) {
@@ -81,6 +106,7 @@ public class HomeWorkActivity extends AppCompatActivity {
             }
         });
     }
+
 
     void ListViewMethod() {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -107,6 +133,7 @@ public class HomeWorkActivity extends AppCompatActivity {
     }
 
     public void MyOnClick(View v) {
+        Intent intent;
         if (v.getId() == R.id.HomeWorkAddBtn) {
             View view = View.inflate(this, R.layout.homework_add, null);
             init2(view);
@@ -117,7 +144,7 @@ public class HomeWorkActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             try {
-                                WriteData = e1.getText().toString() + "\n" + RadioCheck() + "\n" + PickYear +"-"+ PickMonth +"-"+ PickDay + "\n";
+                                WriteData = e1.getText().toString() + "\n" + RadioCheck() + "\n" + PickYear + "-" + PickMonth + "-" + PickDay + "\n";
                                 BufferedWriter bw = new BufferedWriter(new FileWriter(MYPATH + "/" + e1.getText().toString(), false));
                                 bw.write(WriteData);
                                 bw.close();
@@ -147,6 +174,26 @@ public class HomeWorkActivity extends AppCompatActivity {
                     })
                     .setPositiveButton("취소", null)
                     .show();
+        } else if (v.getId() == R.id.GFreebtn) {
+            intent = new Intent(HomeWorkActivity.this, FreeBoardActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GClassbtn) {
+            intent = new Intent(HomeWorkActivity.this, ClassHourActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GMeetbtn) {
+            intent = new Intent(HomeWorkActivity.this, MeetingActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GNoticebtn) {
+            intent = new Intent(HomeWorkActivity.this, NoticeActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GPotalbtn) {
+            intent = new Intent(HomeWorkActivity.this, PotalActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -204,7 +251,7 @@ public class HomeWorkActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            fname="";
+            fname = "";
         }
     }
 
@@ -220,6 +267,7 @@ public class HomeWorkActivity extends AppCompatActivity {
         }
         return sdPath;
     }
+
     void setActionBar() {
         ActionBar actionBar1 = getSupportActionBar();
 
@@ -228,9 +276,53 @@ public class HomeWorkActivity extends AppCompatActivity {
         actionBar1.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar1.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
 
-        actionBar1.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.MyBlue)));
+        actionBar1.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        ImageButton i1 = (ImageButton) view.findViewById(R.id.homeBtn);
+        i1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
         actionBar1.setCustomView(view);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 1, 0, "내 정보");
+        menu.add(0, 2, 0, "로그아웃");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 1) {
+            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+//            intent.putExtra("Name", Name);
+//            intent.putExtra("Nick", Nick);
+//            intent.putExtra("Time", Time);
+            startActivity(intent);
+        } else if (item.getItemId() == 2) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra("Logout", "Logout");
+            SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = info.edit();
+            editor.clear();
+            editor.commit();
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

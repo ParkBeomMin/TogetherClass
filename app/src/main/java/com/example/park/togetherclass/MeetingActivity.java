@@ -1,17 +1,25 @@
 package com.example.park.togetherclass;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -28,7 +36,9 @@ public class MeetingActivity extends AppCompatActivity {
     GridView g1;
     ArrayList<Meet> arrayList = new ArrayList<Meet>();
     MeetAdapter adapter;
-
+String Name, Nick;
+    Button b1;
+    HorizontalScrollView s1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +50,17 @@ public class MeetingActivity extends AppCompatActivity {
     }
 
     void init() {
+        b1 = (Button) findViewById(R.id.GMeetbtn);
+        b1.setEnabled(true);
+        b1.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
+        b1.setTextColor(getResources().getColor(R.color.White));
+        s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                s1.smoothScrollBy(400, 0);
+            }
+        }, 200);
         AlertDialog.Builder builder = new AlertDialog.Builder(MeetingActivity.this);
         builder.setTitle("메일보내기 & 사이트 접속하기")
                 .setMessage("짧게 클릭 시 메일보내기\n" +
@@ -49,6 +70,35 @@ public class MeetingActivity extends AppCompatActivity {
         g1 = (GridView) findViewById(R.id.meetingList);
         adapter = new MeetAdapter(arrayList, getApplication());
         g1.setAdapter(adapter);
+
+        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+        Name = info.getString("Name", null);
+        Nick = info.getString("Nick", null);
+    }
+
+    public void MyOnClick(View v) {
+        Intent intent;
+        if (v.getId() == R.id.GFreebtn) {
+            intent = new Intent(MeetingActivity.this, FreeBoardActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GClassbtn) {
+            intent = new Intent(MeetingActivity.this, ClassHourActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GHomebtn) {
+            intent = new Intent(MeetingActivity.this, HomeWorkActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GNoticebtn) {
+            intent = new Intent(MeetingActivity.this, NoticeActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GPotalbtn) {
+            intent = new Intent(MeetingActivity.this, PotalActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     void GridViewMethod() {
@@ -67,10 +117,9 @@ public class MeetingActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 String site = arrayList.get(position).Site;
-                if(site.equals("-")){
+                if (site.equals("-")) {
                     Toast.makeText(getApplicationContext(), "사이트가 존재하지 않습니다.", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(site));
                     startActivity(intent);
                 }
@@ -149,44 +198,51 @@ public class MeetingActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
 
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.MyBlue)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        ImageButton i1 = (ImageButton) view.findViewById(R.id.homeBtn);
+        i1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
         actionBar.setCustomView(view);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 1, 0, "내 정보");
+        menu.add(0, 2, 0, "로그아웃");
+        return super.onCreateOptionsMenu(menu);
+    }
 
-//
-//
-//    class myAsyncTask extends AsyncTask<Void, Void, Void> {
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(MeetingActivity.this);
-//            builder.setTitle("메일보내기 & 사이트 접속하기")
-//                    .setMessage("짧게 클릭 시 메일보내기\n" +
-//                    "길게 클릭 시 사이트 접속")
-//            .show();
-//            try {
-//                Thread.sleep(3000);
-//                builder.
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Void... values) {
-//            super.onProgressUpdate(values);
-//        }
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 1) {
+            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+//            intent.putExtra("Name", Name);
+//            intent.putExtra("Nick", Nick);
+//            intent.putExtra("Time", Time);
+            startActivity(intent);
+        } else if (item.getItemId() == 2) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra("Logout", "Logout");
+            SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = info.edit();
+            editor.clear();
+            editor.commit();
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

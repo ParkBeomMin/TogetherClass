@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -54,6 +56,7 @@ public class FreeBoardActivity extends AppCompatActivity {
     FreeAdapter selecfreeAdapter;
     Button b1;
     String Nick, Name, Pw;
+    HorizontalScrollView s1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,15 @@ public class FreeBoardActivity extends AppCompatActivity {
     void init() {
         b1 = (Button) findViewById(R.id.GFreebtn);
         b1.setEnabled(true);
+        b1.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
+        b1.setTextColor(getResources().getColor(R.color.White));
+        s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                s1.smoothScrollBy(0, 0);
+            }
+        }, 200);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
@@ -256,24 +268,26 @@ public class FreeBoardActivity extends AppCompatActivity {
                     )
                     .setNegativeButton("취소", null)
                     .show();
-        } else if (v.getId() == R.id.GMainbtn) {
-            intent = new Intent(FreeBoardActivity.this, MainActivity.class);
-            startActivity(intent);
         } else if (v.getId() == R.id.GClassbtn) {
             intent = new Intent(FreeBoardActivity.this, ClassHourActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GHomebtn) {
             intent = new Intent(FreeBoardActivity.this, HomeWorkActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GMeetbtn) {
             intent = new Intent(FreeBoardActivity.this, MeetingActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GNoticebtn) {
             intent = new Intent(FreeBoardActivity.this, NoticeActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GPotalbtn) {
             intent = new Intent(FreeBoardActivity.this, PotalActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -397,6 +411,7 @@ public class FreeBoardActivity extends AppCompatActivity {
         });
         actionBar.setCustomView(view);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, "내 정보");
@@ -424,4 +439,12 @@ public class FreeBoardActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

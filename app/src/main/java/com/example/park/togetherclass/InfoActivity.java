@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +39,7 @@ public class InfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
+        setActionBar();
         init();
         ListViewMethod();
     }
@@ -55,6 +59,7 @@ public class InfoActivity extends AppCompatActivity {
         adapter = new InfoAdapter(arrayList, getApplication());
         listView.setAdapter(adapter);
     }
+
     void ListViewMethod() {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -152,4 +157,34 @@ public class InfoActivity extends AppCompatActivity {
         }
         return sdPath;
     }
+
+    void setActionBar() {
+        ActionBar actionBar1 = getSupportActionBar();
+
+        actionBar1.setDisplayShowCustomEnabled(true);
+        actionBar1.setDisplayHomeAsUpEnabled(false);            //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
+        actionBar1.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
+        actionBar1.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
+
+        actionBar1.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
+
+        View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        ImageButton i1 = (ImageButton) view.findViewById(R.id.homeBtn);
+        i1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        actionBar1.setCustomView(view);
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//        startActivity(intent);
+//        finish();
+//    }
 }

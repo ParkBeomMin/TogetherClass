@@ -6,7 +6,70 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.park.togetherclass.PotalActivity">
-<WebView
+
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarAlwaysDrawHorizontalTrack="true">
+            <ImageView />
+
+            <Button
+                android:id="@+id/GClassbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:text="수업시간" />
+
+            <Button
+                android:id="@+id/GFreebtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:text="자유게시판" />
+
+            <Button
+                android:id="@+id/GNoticebtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:text="과목 공지" />
+
+            <Button
+                android:id="@+id/GMeetbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:text="교수현황" />
+
+            <Button
+                android:id="@+id/GPotalbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:text="포탈" />
+
+            <Button
+                android:id="@+id/GHomebtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:text="스케쥴" />
+        </GridLayout>
+    </HorizontalScrollView>
+
+    <WebView
     android:id="@+id/webView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"></WebView>

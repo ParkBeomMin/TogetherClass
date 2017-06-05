@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -13,11 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -44,7 +49,8 @@ public class NoticeActivity extends AppCompatActivity {
     ArrayList<Notice> arrayList = new ArrayList<Notice>();
     NoticeAdapter adapter;
     String Name, Nick, Pw;
-    Button b1;
+    Button b1, b2;
+    HorizontalScrollView s1;
 
 
     @Override
@@ -59,16 +65,28 @@ public class NoticeActivity extends AppCompatActivity {
 
     void init() {
         b1 = (Button) findViewById(R.id.NoticeBtn);
+        b2 = (Button) findViewById(R.id.GNoticebtn);
+        b2.setEnabled(true);
+        b2.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
+        b2.setTextColor(getResources().getColor(R.color.White));
+        s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                s1.smoothScrollBy(0, 0);
+            }
+        }, 200);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
         Pw = info.getString("Pw", null);
-        if(Nick.equals("교수님"))
+        if (Nick.equals("교수님"))
             b1.setVisibility(View.VISIBLE);
         l1 = (ListView) findViewById(R.id.NoticeList);
         adapter = new NoticeAdapter(arrayList, getApplication());
         l1.setAdapter(adapter);
     }
+
     void ListViewMethod() {
         l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -76,42 +94,65 @@ public class NoticeActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(NoticeActivity.this);
                 builder.setTitle(arrayList.get(position).Title)
                         .setMessage(arrayList.get(position).Content)
-                        .setNegativeButton("확인",null)
+                        .setNegativeButton("확인", null)
                         .show();
             }
         });
     }
 
     public void MyOnClick(View v) {
-        View view = getLayoutInflater().inflate(R.layout.add_free_list, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final Spinner spinner1 = (Spinner) view.findViewById(R.id.AFSpinner);
-        spinner1.setVisibility(View.GONE);
-        final EditText e1 = (EditText) view.findViewById(R.id.AFTitleEt);
-        final EditText e2 = (EditText) view.findViewById(R.id.AFContentEt);
-        final String date = doCurrentDate();
-        builder.setTitle("등록하기")
-                .setView(view)
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
-                                        BackgroundTask task = new BackgroundTask();
-                                        task.execute();
-                                    }
-                                };
-                                NoticeAddRequest write = new NoticeAddRequest(e1.getText().toString(), e2.getText().toString(), date, Pw, "모앱", responseListener);
-                                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                                queue.add(write);
+        Intent intent;
+        if (v.getId() == R.id.NoticeBtn) {
+            View view = getLayoutInflater().inflate(R.layout.add_free_list, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final Spinner spinner1 = (Spinner) view.findViewById(R.id.AFSpinner);
+            spinner1.setVisibility(View.GONE);
+            final EditText e1 = (EditText) view.findViewById(R.id.AFTitleEt);
+            final EditText e2 = (EditText) view.findViewById(R.id.AFContentEt);
+            final String date = doCurrentDate();
+            builder.setTitle("등록하기")
+                    .setView(view)
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
+                                            BackgroundTask task = new BackgroundTask();
+                                            task.execute();
+                                        }
+                                    };
+                                    NoticeAddRequest write = new NoticeAddRequest(e1.getText().toString(), e2.getText().toString(), date, Pw, "모앱", responseListener);
+                                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                                    queue.add(write);
+                                }
                             }
-                        }
 
-                )
-                .setNegativeButton("취소", null)
-                .show();
+                    )
+                    .setNegativeButton("취소", null)
+                    .show();
+        } else if (v.getId() == R.id.GClassbtn) {
+            intent = new Intent(NoticeActivity.this, ClassHourActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GFreebtn) {
+            intent = new Intent(NoticeActivity.this, FreeBoardActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GHomebtn) {
+            intent = new Intent(NoticeActivity.this, HomeWorkActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GMeetbtn) {
+            intent = new Intent(NoticeActivity.this, MeetingActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.GPotalbtn) {
+            intent = new Intent(NoticeActivity.this, PotalActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, String> {
@@ -209,6 +250,7 @@ public class NoticeActivity extends AppCompatActivity {
         String strD = nYear + "-" + nMonth + "-" + nDay + " " + nTime + ":" + nMin + ":" + nSec;
         return strD;
     }
+
     void setActionBar() {
         ActionBar actionBar = getSupportActionBar();
 
@@ -217,10 +259,53 @@ public class NoticeActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
 
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.MyBlue)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        ImageButton i1 = (ImageButton) view.findViewById(R.id.homeBtn);
+        i1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
         actionBar.setCustomView(view);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 1, 0, "내 정보");
+        menu.add(0, 2, 0, "로그아웃");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 1) {
+            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+//            intent.putExtra("Name", Name);
+//            intent.putExtra("Nick", Nick);
+//            intent.putExtra("Time", Time);
+            startActivity(intent);
+        } else if (item.getItemId() == 2) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra("Logout", "Logout");
+            SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = info.edit();
+            editor.clear();
+            editor.commit();
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

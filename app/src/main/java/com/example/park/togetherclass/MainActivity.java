@@ -88,31 +88,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
         switch (v.getId()) {
             case R.id.MClassHourBtn:
-                final int[] SelectSubject = new int[1];
-                final String[] Subject = {"모앱", "디비", "컴구", "OS", "알고리즘"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("어떤 과목의 수업입니까?")
-                        .setSingleChoiceItems(Subject, 0, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        SelectSubject[0] = i;
-                                    }
-                                }
-                        )
-                        .setNegativeButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(MainActivity.this, ClassHourActivity.class);
-                                intent.putExtra("Subject", Subject[SelectSubject[0]]);
-                                startActivity(intent);
-                            }
-                        })
-                        .setPositiveButton("취소", null)
-                        .show();
+                intent = new Intent(MainActivity.this, ClassHourActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.MFreeBoardBtn:
                 intent = new Intent(MainActivity.this, FreeBoardActivity.class);
                 startActivity(intent);
+                finish();
+
                 break;
             case R.id.MNoticeBtn:
                 intent = new Intent(MainActivity.this, NoticeActivity.class);
@@ -121,14 +105,19 @@ public class MainActivity extends AppCompatActivity {
             case R.id.MMeetingBtn:
                 intent = new Intent(MainActivity.this, MeetingActivity.class);
                 startActivity(intent);
+                finish();
+
                 break;
             case R.id.MHomePageBtn:
                 intent = new Intent(MainActivity.this, PotalActivity.class);
                 startActivity(intent);
+                finish();
+
                 break;
             case R.id.MHomeWorkBtn:
                 intent = new Intent(MainActivity.this, HomeWorkActivity.class);
                 startActivity(intent);
+                finish();
                 break;
         }
     }
@@ -163,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBackPressed() {
         if (System.currentTimeMillis() - lastTimeBackPressed < 1500) {
-            finish();
+            System.exit(0);
             return;
         }
         Toast.makeText(this, "뒤로 버튼을 한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show();

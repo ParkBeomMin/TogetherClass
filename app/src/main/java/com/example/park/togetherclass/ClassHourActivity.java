@@ -1,27 +1,96 @@
 package com.example.park.togetherclass;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class ClassHourActivity extends AppCompatActivity  {
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
+public class ClassHourActivity extends AppCompatActivity {
+    String Name, Nick, Pw;
+    HorizontalScrollView s1;
+    Button b1;
+    EditText e1;
+    ArrayList<ClassHour> arrayList = new ArrayList<ClassHour>();
+    ClassHourAdapter adapter;
+    ListView l1;
+    String Sign="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_hour);
         setActionBar();
-        Intent intent = getIntent();
-        String subject = intent.getStringExtra("Subject");
-        Toast.makeText(getApplicationContext(), subject,Toast.LENGTH_LONG).show();
+        init();
+        ListViewMethod();
+        new BackgroundTask().execute();
     }
 
-    void setActionBar(){
+    void init() {
+        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+        Name = info.getString("Name", null);
+        Nick = info.getString("Nick", null);
+        Pw = info.getString("Pw", null);
+        Log.d("BEOM10", Nick);
+        l1 = (ListView) findViewById(R.id.questionList);
+        adapter = new ClassHourAdapter(getApplicationContext(), arrayList);
+        l1.setAdapter(adapter);
+        e1 = (EditText) findViewById(R.id.questionEt);
+        b1 = (Button) findViewById(R.id.GClassbtn);
+        b1.setEnabled(true);
+        b1.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
+        b1.setTextColor(getResources().getColor(R.color.White));
+        s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                s1.smoothScrollBy(0, 0);
+            }
+        }, 200);
+    }
+
+    void setActionBar() {
         ActionBar actionBar = getSupportActionBar();
 
         actionBar.setDisplayShowCustomEnabled(true);
@@ -29,32 +98,346 @@ public class ClassHourActivity extends AppCompatActivity  {
         actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
 
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.MyBlue)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        ImageButton i1 = (ImageButton) view.findViewById(R.id.homeBtn);
+        i1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
         actionBar.setCustomView(view);
+    }
+
+    void ListViewMethod() {
+        l1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final String content = arrayList.get(position).Content;
+                final String nick = arrayList.get(position).Nick;
+                final String date = arrayList.get(position).Date;
+                final String pw = arrayList.get(position).Pw;
+                final int pos = position;
+                LayoutInflater inflater = getLayoutInflater();
+                View deleteView = inflater.inflate(R.layout.delete_free_list, null);
+                final TextView t1 = (TextView) deleteView.findViewById(R.id.deleteNickTv);
+                final EditText e1 = (EditText) deleteView.findViewById(R.id.deletePwEt);
+                t1.setText("작성자 : " + nick + "님");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ClassHourActivity.this);
+                builder.setTitle("삭제")
+                        .setView(deleteView)
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Response.Listener<String> responseListener = new Response.Listener<String>() {
+
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            boolean success = false;
+                                            if (pw.equals(e1.getText().toString())) {
+                                                success = true;
+                                            }
+                                            if (success) {
+                                                Toast.makeText(getApplicationContext(), "삭제되었습니다.", Toast.LENGTH_LONG).show();
+                                                adapter.notifyDataSetChanged();
+                                                arrayList.remove(pos);
+                                                new BackgroundTask().execute();
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        BackgroundTask task = new BackgroundTask();
+                                        task.execute();
+                                    }
+                                };
+                                ClassDeleteRequest deleteRequest = new ClassDeleteRequest(content, nick, e1.getText().toString(), date, responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(ClassHourActivity.this);
+                                queue.add(deleteRequest);
+                            }
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
+                return true;
+            }
+        });
     }
 
     public void MyOnClick(View v) {
         Intent intent;
-        if (v.getId() == R.id.GMainbtn) {
-            intent = new Intent(ClassHourActivity.this, MainActivity.class);
-            startActivity(intent);
-        } else if (v.getId() == R.id.GFreebtn) {
+        if (v.getId() == R.id.GFreebtn) {
             intent = new Intent(ClassHourActivity.this, FreeBoardActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GHomebtn) {
             intent = new Intent(ClassHourActivity.this, HomeWorkActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GMeetbtn) {
             intent = new Intent(ClassHourActivity.this, MeetingActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GNoticebtn) {
             intent = new Intent(ClassHourActivity.this, NoticeActivity.class);
             startActivity(intent);
+            finish();
         } else if (v.getId() == R.id.GPotalbtn) {
             intent = new Intent(ClassHourActivity.this, PotalActivity.class);
             startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.understandingButton) {
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Toast.makeText(getApplicationContext(), "버튼누름!", Toast.LENGTH_LONG).show();
+                }
+            };
+            SendSignRequest write = new SendSignRequest("1", responseListener);
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            queue.add(write);
+
+            if (Nick.equals("교수님")) {
+                new BackgroundTask1().execute();
+                //받아오기
+                if (Sign.equals("1")) {
+                    NotificationManager notificationManager = (NotificationManager) ClassHourActivity.this.getSystemService(ClassHourActivity.this.NOTIFICATION_SERVICE);
+                    Intent intent1 = new Intent(ClassHourActivity.this.getApplicationContext(), ClassHourActivity.class); //인텐트 생성.
+                    Notification.Builder builder = new Notification.Builder(getApplicationContext());
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);//현재 액티비티를 최상으로 올리고, 최상의 액티비티를 제외한 모든 액티비티를 없앤다.
+                    PendingIntent pendingNotificationIntent = PendingIntent.getActivity(ClassHourActivity.this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                    //PendingIntent는 일회용 인텐트 같은 개념입니다.
+//                    FLAG_UPDATE_CURRENT - > 만일 이미 생성된 PendingIntent가 존재 한다면, 해당 Intent의 내용을 변경함.
+//                            FLAG_CANCEL_CURRENT -.이전에 생성한 PendingIntent를 취소하고 새롭게 하나 만든다.
+//                            FLAG_NO_CREATE->현재 생성된 PendingIntent를 반환합니다.
+//                    FLAG_ONE_SHOT - > 이 플래그를 사용해 생성된 PendingIntent는 단 한번밖에 사용할 수 없습니다
+                    builder.setSmallIcon(R.drawable.title).setTicker("HETT").setWhen(System.currentTimeMillis())
+                            .setNumber(1).setContentTitle("푸쉬 제목").setContentText("푸쉬내용")
+                            .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingNotificationIntent).setAutoCancel(true).setOngoing(true);
+                    //해당 부분은 API 4.1버전부터 작동합니다.
+
+//setSmallIcon - > 작은 아이콘 이미지
+//setTicker - > 알람이 출력될 때 상단에 나오는 문구.
+//setWhen -> 알림 출력 시간.
+//setContentTitle-> 알림 제목
+//setConentText->푸쉬내용
+                    notificationManager.notify(1, builder.build()); // Notification send
+
+                    Response.Listener<String> responseListener1 = new Response.Listener<String>() {
+
+                        @Override
+                        public void onResponse(String response) {
+                        }
+                    };
+                    DeleteSignRequest deleteRequest = new DeleteSignRequest(Sign, responseListener1);
+                    RequestQueue queue1 = Volley.newRequestQueue(ClassHourActivity.this);
+                    queue1.add(deleteRequest);
+                }
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "!!!!", Toast.LENGTH_LONG).show();
+            }
+
+
+//알람울리기
+//지우기
+        } else if (v.getId() == R.id.addQuestionButton) {
+            String content = e1.getText().toString();
+            String Date = doCurrentDate();
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Toast.makeText(getApplicationContext(), "게시되었습니다.", Toast.LENGTH_LONG).show();
+                    new BackgroundTask().execute();
+                }
+            };
+            ClassWriteRequest write = new ClassWriteRequest(content, Nick, Pw, Date, responseListener);
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            queue.add(write);
+            e1.setText("");
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 1, 0, "내 정보");
+        menu.add(0, 2, 0, "로그아웃");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 1) {
+            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (item.getItemId() == 2) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra("Logout", "Logout");
+            SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = info.edit();
+            editor.clear();
+            editor.commit();
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public String doCurrentDate() {
+        int nYear;
+        String nMonth;
+        String nDay;
+        String nTime;
+        String nMin;
+        String nSec;
+        // 현재 날짜 구하기
+        Calendar calendar = new GregorianCalendar(Locale.KOREA);
+        nYear = calendar.get(Calendar.YEAR);
+        nMonth = (calendar.get(Calendar.MONTH) + 1) + "";
+        if (nMonth.length() < 2) {
+            nMonth = "0" + nMonth;
+        }
+        nDay = calendar.get(Calendar.DAY_OF_MONTH) + "";
+        if (nDay.length() < 2) {
+            nDay = "0" + nDay;
+        }
+        nTime = calendar.get(Calendar.HOUR_OF_DAY) + "";
+        if (nTime.length() < 2) {
+            nTime = "0" + nTime;
+        }
+        nMin = calendar.get(Calendar.MINUTE) + "";
+        if (nMin.length() < 2) {
+            nMin = "0" + nMin;
+        }
+        nSec = calendar.get(Calendar.SECOND) + "";
+        if (nSec.length() < 2) {
+            nSec = "0" + nSec;
+        }
+        String strD = nYear + "-" + nMonth + "-" + nDay + " " + nTime + ":" + nMin + ":" + nSec;
+        return strD;
+    }
+
+    class BackgroundTask extends AsyncTask<Void, Void, String> {
+        String target;
+
+        @Override
+        protected void onPreExecute() {
+            target = "http://pkr10.cafe24.com/ClassList.php";
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                URL url = new URL(target);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferReader = new BufferedReader(new InputStreamReader(inputStream));
+                String temp;
+                StringBuilder stringBuilder = new StringBuilder();
+                while ((temp = bufferReader.readLine()) != null) {
+                    stringBuilder.append(temp + "\n");
+                }
+                bufferReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return stringBuilder.toString().trim();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onProgressUpdate(Void... values) {
+            super.onProgressUpdate();
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            try {
+                arrayList.clear();
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray jsonArray = jsonObject.getJSONArray("response");
+                int count = 0;
+                String ClassContent, ClassNick, ClassDate, ClassPw;
+                while (count < jsonArray.length()) {
+                    JSONObject object = jsonArray.getJSONObject(count);
+                    ClassContent = object.getString("ClassContent");
+                    ClassNick = object.getString("ClassNick");
+                    ClassDate = object.getString("ClassDate");
+                    ClassPw = object.getString("ClassPw");
+                    ClassHour classHour = new ClassHour(ClassContent, ClassNick, ClassPw, ClassDate);
+                    arrayList.add(classHour);
+                    count++;
+                }
+                adapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    class BackgroundTask1 extends AsyncTask<Void, Void, String> {
+        String target;
+
+        @Override
+        protected void onPreExecute() {
+            target = "http://pkr10.cafe24.com/Sign.php";
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                URL url = new URL(target);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferReader = new BufferedReader(new InputStreamReader(inputStream));
+                String temp;
+                StringBuilder stringBuilder = new StringBuilder();
+                while ((temp = bufferReader.readLine()) != null) {
+                    stringBuilder.append(temp + "\n");
+                }
+                bufferReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return stringBuilder.toString().trim();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onProgressUpdate(Void... values) {
+            super.onProgressUpdate();
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray jsonArray = jsonObject.getJSONArray("response");
+                int count = 0;
+                while (count < jsonArray.length()) {
+                    JSONObject object = jsonArray.getJSONObject(count);
+                    Sign = object.getString("SIGN");
+                    count++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ClassHourActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
