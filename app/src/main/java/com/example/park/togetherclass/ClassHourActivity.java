@@ -1,5 +1,6 @@
 package com.example.park.togetherclass;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
@@ -14,7 +16,9 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -76,6 +80,7 @@ public class ClassHourActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_hour);
         setActionBar();
+        checkPermission2();
         init();
         ListViewMethod();
         new BackgroundTask().execute();
@@ -223,8 +228,7 @@ public class ClassHourActivity extends AppCompatActivity {
             SendSignRequest write = new SendSignRequest("1", responseListener);
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             queue.add(write);
-//알람울리기
-//지우기
+
         } else if (v.getId() == R.id.addQuestionButton) {
             String content = e1.getText().toString();
             String Date = doCurrentDate();
@@ -250,6 +254,7 @@ public class ClassHourActivity extends AppCompatActivity {
                 }// TODO Auto-generated method stub
                 recorder = new MediaRecorder();
                 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                 recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
                 recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                 recorder.setOutputFile(RECORDED_FILE + "/" + recodeDate + ".mp4");
@@ -561,5 +566,18 @@ public class ClassHourActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), sdPath, Toast.LENGTH_LONG).show();
         }
         return sdPath;
+    }
+
+    void checkPermission2() {
+
+        int permissionCheck_RECORD = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        if (permissionCheck_RECORD == PackageManager.PERMISSION_GRANTED) {
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "허용을 눌러야 정상적인 앱 실행이 가능합니다.", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    100);
+        }
     }
 }

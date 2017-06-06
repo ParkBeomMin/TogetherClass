@@ -176,9 +176,8 @@ public class LoginActivity extends AppCompatActivity {
 
     void checkPermission() {
 
-        int permissionCheck_RECORD = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
         int permissioninfo = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permissioninfo == PackageManager.PERMISSION_GRANTED ) {
+        if (permissioninfo == PackageManager.PERMISSION_GRANTED) {
         } else {
             Toast.makeText(getApplicationContext(),
                     "허용을 눌러야 정상적인 앱 실행이 가능합니다.", Toast.LENGTH_SHORT).show();
@@ -187,6 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                     100);
         }
     }
+
 }
 //
 //
