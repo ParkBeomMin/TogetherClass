@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.LOCATION_HARDWARE" />
 
     <application
         android:allowBackup="true"
@@ -15,13 +17,11 @@
         <activity
             android:name=".StartActivity"
             android:theme="@style/NoTitle01">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -37,6 +37,7 @@
         <activity android:name=".MeetingActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".HomeWorkActivity" />
+        <activity android:name=".RecodeActivity"></activity>
     </application>
 
 </manifest>

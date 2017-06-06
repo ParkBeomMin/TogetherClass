@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/Black</item>
         <item name="colorPrimaryDark">@color/Black</item>
         <item name="colorAccent">@color/Black</item>
+        <item name="alertDialogTheme">@style/MyDialog</item>
+        <!--<item name="buttonBarButtonStyle">@style/buttonBarButtonStyle</item>-->
     </style>
 
     <style name="NoTitle01" parent="Theme.AppCompat.Light.NoActionBar">
@@ -23,4 +25,30 @@
         <item name="colorAccent">@color/Black</item>
     </style>
 
+    <style name="MyDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#9c9797</item>
+
+        <item name="buttonBarNeutralButtonStyle">@style/buttonBarButtonStyle.Neutral</item>
+        <!--<item name="buttonBarNegativeButtonStyle">@style/buttonBarButtonStyle.Negative</item>-->
+        <item name="buttonBarPositiveButtonStyle">@style/buttonBarButtonStyle.Positive</item>
+    </style>
+
+    <style name="buttonBarButtonStyle" parent="Widget.AppCompat.Button.Colored">
+    </style>
+
+    <style name="buttonBarButtonStyle.Neutral">
+        <item name="android:padding">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/White</item></style>
+
+    <style name="buttonBarButtonStyle.Negative">
+    </style>
+
+    <style name="buttonBarButtonStyle.Positive">
+        <item name="android:padding">@dimen/activity_horizontal_margin</item>
+
+        <item name="android:layout_weight">1</item>
+
+        <item name="android:textColor">@color/White</item>
+    </style>
 </resources>

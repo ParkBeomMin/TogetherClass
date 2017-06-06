@@ -11,22 +11,36 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.park.togetherclass.InfoActivity">
 
-    <TextView
-        android:id="@+id/helloTv"
-        android:textSize="30dp"
-        android:text="안녕하세요!! 000님!!"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"/>
+        android:src="@drawable/hello" />
+
     <TextView
-        android:gravity="center_horizontal"
-        android:textSize="20dp"
-        android:text="이 기기에서 접속기록 입니다."
+        android:id="@+id/helloTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
+        android:text="안녕하세요!! 000님!!"
+        android:textColor="@color/Button"
+        android:textSize="30dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:text="이 기기에서 접속기록 입니다."
+        android:textSize="15dp" />
+
     <ListView
+        android:padding="15dp"
         android:id="@+id/ConnectionRecordList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:divider="#595757"
+        android:dividerHeight="0.05dp"></ListView>
 </LinearLayout>

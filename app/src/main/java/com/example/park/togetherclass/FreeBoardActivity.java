@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +25,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -229,45 +233,81 @@ public class FreeBoardActivity extends AppCompatActivity {
     public void MyOnClick(View v) {
         Intent intent;
         if (v.getId() == R.id.FreeRegiBtn) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialog alertDialog;
+            alertDialog = new AlertDialog.Builder(this).create();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View view = getLayoutInflater().inflate(R.layout.add_free_list, null);
+            View titleView = getLayoutInflater().inflate(R.layout.add_title, null);
             ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.AddFree, android.R.layout.simple_spinner_dropdown_item);
             final Spinner spinner1 = (Spinner) view.findViewById(R.id.AFSpinner);
             spinner1.setAdapter(arrayAdapter);
             final EditText e1 = (EditText) view.findViewById(R.id.AFTitleEt);
             final EditText e2 = (EditText) view.findViewById(R.id.AFContentEt);
+            final Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
+            final Button confirmBtn = (Button) view.findViewById(R.id.confirmBtn);
             final String date = doCurrentDate();
             final String[] Subject = {""};
             final String[] Title = {""};
             Subject[0] = spinner1.getSelectedItem().toString();
             Title[0] = e1.getText().toString();
-            builder.setTitle("등록하기")
-                    .setView(view)
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                        @Override
-                                        public void onResponse(String response) {
-                                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
-                                            selectfreeArrayList.add(new Free(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0]));
-                                            selecfreeAdapter.notifyDataSetChanged();
-                                            BackgroundTask task = new BackgroundTask();
-                                            task.execute();
-                                        }
-                                    };
-                                    Subject[0] = spinner1.getSelectedItem().toString();
-                                    Title[0] = e1.getText().toString();
-                                    Log.d("BEOM8", Nick + e1.getText().toString() + e2.getText().toString() + date + Pw);
-                                    FreeBoardRequest write = new FreeBoardRequest(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0], responseListener);
-                                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                                    queue.add(write);
-                                }
-                            }
-
-                    )
-                    .setNegativeButton("취소", null)
-                    .show();
+            alertDialog.setCustomTitle(titleView);
+            alertDialog.setView(view);
+            alertDialog.show();
+//            builder.setCustomTitle(titleView)
+//                    .setView(view)
+//                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+//                                        @Override
+//                                        public void onResponse(String response) {
+//                                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
+//                                            selectfreeArrayList.add(new Free(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0]));
+//                                            selecfreeAdapter.notifyDataSetChanged();
+//                                            BackgroundTask task = new BackgroundTask();
+//                                            task.execute();
+//                                        }
+//                                    };
+//                                    Subject[0] = spinner1.getSelectedItem().toString();
+//                                    Title[0] = e1.getText().toString();
+//                                    Log.d("BEOM8", Nick + e1.getText().toString() + e2.getText().toString() + date + Pw);
+//                                    FreeBoardRequest write = new FreeBoardRequest(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0], responseListener);
+//                                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+//                                    queue.add(write);
+//                                }
+//                            }
+//
+//                    )
+//                    .setNeutralButton("취소", null)
+//                    .show();
+            confirmBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
+                            selectfreeArrayList.add(new Free(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0]));
+                            selecfreeAdapter.notifyDataSetChanged();
+                            BackgroundTask task = new BackgroundTask();
+                            task.execute();
+                        }
+                    };
+                    Subject[0] = spinner1.getSelectedItem().toString();
+                    Title[0] = e1.getText().toString();
+                    Log.d("BEOM8", Nick + e1.getText().toString() + e2.getText().toString() + date + Pw);
+                    FreeBoardRequest write = new FreeBoardRequest(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0], responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                    queue.add(write);
+                    alertDialog.dismiss();
+                }
+            });
+            cancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
         } else if (v.getId() == R.id.GClassbtn) {
             intent = new Intent(FreeBoardActivity.this, ClassHourActivity.class);
             startActivity(intent);
@@ -397,7 +437,6 @@ public class FreeBoardActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(false);            //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
-
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
@@ -439,6 +478,7 @@ public class FreeBoardActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

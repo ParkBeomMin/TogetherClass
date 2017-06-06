@@ -43,6 +43,7 @@ public class InfoAdapter extends BaseAdapter {
         if(convertView == null) {
             convertView = inflater.inflate(R.layout.info_list, null);
         }
+        convertView.setPadding(10,10,10,10);
         TextView t1 = (TextView) convertView.findViewById(R.id.infoNick);
         TextView t2 = (TextView) convertView.findViewById(R.id.infoTime);
         Info one;

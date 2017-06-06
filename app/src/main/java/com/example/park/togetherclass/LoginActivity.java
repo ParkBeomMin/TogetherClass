@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
     public void MyOnClick(View v) {
         switch (v.getId()) {
             case R.id.loginButton:
-                if(!NickEt.getText().toString().equals("교수님")) {
+                if (!NickEt.getText().toString().equals("교수님")) {
                     if (NameEt.getText().toString().length() == 0 || NickEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
                         if (NameEt.getText().toString().length() == 0) {
                             NameEt.requestFocus();
@@ -130,15 +130,13 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
-                }
-                else {
+                } else {
                     if (NameEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
                         if (NameEt.getText().toString().length() == 0) {
                             NameEt.requestFocus();
                             NameEt.setHintTextColor(Color.RED);
                             NameEt.setHint("수업번호를 입력해주세요!");
-                        }
-                        else if (PwEt.getText().toString().length() == 0) {
+                        } else if (PwEt.getText().toString().length() == 0) {
                             PwEt.requestFocus();
                             PwEt.setHintTextColor(Color.RED);
                             PwEt.setHint("비밀번호를 입력해주세요!");
@@ -177,9 +175,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void checkPermission() {
-        int permissioninfo = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permissioninfo == PackageManager.PERMISSION_GRANTED) {
+
+        int permissionCheck_RECORD = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        int permissioninfo = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissioninfo == PackageManager.PERMISSION_GRANTED ) {
         } else {
             Toast.makeText(getApplicationContext(),
                     "허용을 눌러야 정상적인 앱 실행이 가능합니다.", Toast.LENGTH_SHORT).show();
@@ -189,3 +188,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 }
+//
+//
+//}

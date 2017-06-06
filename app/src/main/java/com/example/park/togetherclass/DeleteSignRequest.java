@@ -12,7 +12,7 @@ import java.util.Map;
  */
 
 public class DeleteSignRequest extends StringRequest{
-    final static private String URL = "http://pkr10.cafe24.com/SignDelete.php";
+    final static private String URL = "http://pkr10.cafe24.com/SignUpdate.php";
 
     private Map<String, String> parameters;
 

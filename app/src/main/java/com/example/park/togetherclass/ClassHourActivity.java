@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -50,12 +53,19 @@ import java.util.Locale;
 public class ClassHourActivity extends AppCompatActivity {
     String Name, Nick, Pw;
     HorizontalScrollView s1;
-    Button b1;
+    Button b1, b2;
     EditText e1;
     ArrayList<ClassHour> arrayList = new ArrayList<ClassHour>();
     ClassHourAdapter adapter;
     ListView l1;
-    String Sign="";
+    String Sign = "";
+    final String RECORDED_FILE = getExternalPath() + "TCR";
+
+    MediaPlayer player;
+    MediaRecorder recorder;
+
+    int playbackPosition = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +75,12 @@ public class ClassHourActivity extends AppCompatActivity {
         init();
         ListViewMethod();
         new BackgroundTask().execute();
+        if (Nick.equals("교수님"))
+            myThread.start();
     }
 
     void init() {
+        b2 = (Button) findViewById(R.id.recodeBtn);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
@@ -200,49 +213,6 @@ public class ClassHourActivity extends AppCompatActivity {
             SendSignRequest write = new SendSignRequest("1", responseListener);
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             queue.add(write);
-
-            if (Nick.equals("교수님")) {
-                new BackgroundTask1().execute();
-                //받아오기
-                if (Sign.equals("1")) {
-                    NotificationManager notificationManager = (NotificationManager) ClassHourActivity.this.getSystemService(ClassHourActivity.this.NOTIFICATION_SERVICE);
-                    Intent intent1 = new Intent(ClassHourActivity.this.getApplicationContext(), ClassHourActivity.class); //인텐트 생성.
-                    Notification.Builder builder = new Notification.Builder(getApplicationContext());
-                    intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);//현재 액티비티를 최상으로 올리고, 최상의 액티비티를 제외한 모든 액티비티를 없앤다.
-                    PendingIntent pendingNotificationIntent = PendingIntent.getActivity(ClassHourActivity.this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-                    //PendingIntent는 일회용 인텐트 같은 개념입니다.
-//                    FLAG_UPDATE_CURRENT - > 만일 이미 생성된 PendingIntent가 존재 한다면, 해당 Intent의 내용을 변경함.
-//                            FLAG_CANCEL_CURRENT -.이전에 생성한 PendingIntent를 취소하고 새롭게 하나 만든다.
-//                            FLAG_NO_CREATE->현재 생성된 PendingIntent를 반환합니다.
-//                    FLAG_ONE_SHOT - > 이 플래그를 사용해 생성된 PendingIntent는 단 한번밖에 사용할 수 없습니다
-                    builder.setSmallIcon(R.drawable.title).setTicker("HETT").setWhen(System.currentTimeMillis())
-                            .setNumber(1).setContentTitle("푸쉬 제목").setContentText("푸쉬내용")
-                            .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingNotificationIntent).setAutoCancel(true).setOngoing(true);
-                    //해당 부분은 API 4.1버전부터 작동합니다.
-
-//setSmallIcon - > 작은 아이콘 이미지
-//setTicker - > 알람이 출력될 때 상단에 나오는 문구.
-//setWhen -> 알림 출력 시간.
-//setContentTitle-> 알림 제목
-//setConentText->푸쉬내용
-                    notificationManager.notify(1, builder.build()); // Notification send
-
-                    Response.Listener<String> responseListener1 = new Response.Listener<String>() {
-
-                        @Override
-                        public void onResponse(String response) {
-                        }
-                    };
-                    DeleteSignRequest deleteRequest = new DeleteSignRequest(Sign, responseListener1);
-                    RequestQueue queue1 = Volley.newRequestQueue(ClassHourActivity.this);
-                    queue1.add(deleteRequest);
-                }
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "!!!!", Toast.LENGTH_LONG).show();
-            }
-
-
 //알람울리기
 //지우기
         } else if (v.getId() == R.id.addQuestionButton) {
@@ -259,13 +229,97 @@ public class ClassHourActivity extends AppCompatActivity {
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             queue.add(write);
             e1.setText("");
+        } else if (v.getId() == R.id.recodeBtn) {
+            if (b2.getText().toString().equals("녹음하기")) {
+
+                String recodeDate = doCurrentDate();
+                if (recorder != null) {
+                    recorder.stop();
+                    recorder.release();
+                    recorder = null;
+                }// TODO Auto-generated method stub
+                recorder = new MediaRecorder();
+                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+                recorder.setOutputFile(RECORDED_FILE + "/" + recodeDate + ".mp4");
+                try {
+                    Toast.makeText(getApplicationContext(),
+                            "녹음을 시작합니다.", Toast.LENGTH_LONG).show();
+                    recorder.prepare();
+                    recorder.start();
+                } catch (Exception ex) {
+                    Log.e("SampleAudioRecorder", "Exception : ", ex);
+                }
+                b2.setText("녹음중단");
+            } else {
+                if (recorder == null)
+                    return;
+
+                recorder.stop();
+                recorder.release();
+                recorder = null;
+
+                Toast.makeText(getApplicationContext(),
+                        "녹음이 중지되었습니다.", Toast.LENGTH_LONG).show();
+                // TODO Auto-generated method stub
+                b2.setText("녹음하기");
+
+            }
         }
+
+    }
+
+    void Push() {
+        if (Nick.equals("교수님")) {
+            Log.d("BEOM11", "Before : " + Sign);
+            new BackgroundTask1().execute();
+            Log.d("BEOM11", "After : " + Sign);
+            //받아오기
+            if (Sign.equals("1")) {
+                NotificationManager notificationManager = (NotificationManager) ClassHourActivity.this.getSystemService(ClassHourActivity.this.NOTIFICATION_SERVICE);
+                Intent intent1 = new Intent(ClassHourActivity.this.getApplicationContext(), ClassHourActivity.class); //인텐트 생성.
+                Notification.Builder builder = new Notification.Builder(getApplicationContext());
+                intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);//현재 액티비티를 최상으로 올리고, 최상의 액티비티를 제외한 모든 액티비티를 없앤다.
+                PendingIntent pendingNotificationIntent = PendingIntent.getActivity(ClassHourActivity.this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                //PendingIntent는 일회용 인텐트 같은 개념입니다.
+//                    FLAG_UPDATE_CURRENT - > 만일 이미 생성된 PendingIntent가 존재 한다면, 해당 Intent의 내용을 변경함.
+//                            FLAG_CANCEL_CURRENT -.이전에 생성한 PendingIntent를 취소하고 새롭게 하나 만든다.
+//                            FLAG_NO_CREATE->현재 생성된 PendingIntent를 반환합니다.
+//                    FLAG_ONE_SHOT - > 이 플래그를 사용해 생성된 PendingIntent는 단 한번밖에 사용할 수 없습니다
+                builder.setSmallIcon(R.drawable.title).setTicker("HETT").setWhen(System.currentTimeMillis())
+                        .setNumber(1).setContentTitle("푸쉬 제목").setContentText("푸쉬내용")
+                        .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingNotificationIntent).setAutoCancel(true).setOngoing(true);
+                //해당 부분은 API 4.1버전부터 작동합니다.
+
+//setSmallIcon - > 작은 아이콘 이미지
+//setTicker - > 알람이 출력될 때 상단에 나오는 문구.
+//setWhen -> 알림 출력 시간.
+//setContentTitle-> 알림 제목
+//setConentText->푸쉬내용
+                notificationManager.notify(1, builder.build()); // Notification send
+
+                Response.Listener<String> responseListener1 = new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                };
+                DeleteSignRequest deleteRequest = new DeleteSignRequest(Sign, responseListener1);
+                RequestQueue queue1 = Volley.newRequestQueue(ClassHourActivity.this);
+                queue1.add(deleteRequest);
+            }
+        } else {
+        }
+
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, "내 정보");
-        menu.add(0, 2, 0, "로그아웃");
+        menu.add(0, 2, 0, "녹음목록");
+        menu.add(0, 3, 0, "로그아웃");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -275,13 +329,17 @@ public class ClassHourActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
             startActivity(intent);
             finish();
-        } else if (item.getItemId() == 2) {
+        } else if (item.getItemId() == 3) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             intent.putExtra("Logout", "Logout");
             SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
             SharedPreferences.Editor editor = info.edit();
             editor.clear();
             editor.commit();
+            startActivity(intent);
+            finish();
+        } else if (item.getItemId() == 2) {
+            Intent intent = new Intent(getApplicationContext(), RecodeActivity.class);
             startActivity(intent);
             finish();
         }
@@ -382,6 +440,7 @@ public class ClassHourActivity extends AppCompatActivity {
         }
 
     }
+
     class BackgroundTask1 extends AsyncTask<Void, Void, String> {
         String target;
 
@@ -432,12 +491,57 @@ public class ClassHourActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (Nick.equals("교수님")) {
+//질문내용 다 지우기
+        }
+        myThread.start();
+        myThread.stop();
         Intent intent = new Intent(ClassHourActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    int time = 99999;
+    Handler myHandler = new Handler();
+    Thread myThread = new Thread() {
+        @Override
+        public void run() {
+            super.run();
+            while (time > 0) {
+                myHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Push();
+                        time--;
+                    }
+                });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            time = 99999;
+        }
+    };
+
+
+    public String getExternalPath() {
+        String sdPath = "";
+        String ext = Environment.getExternalStorageState();
+        if (ext.equals(Environment.MEDIA_MOUNTED)) {
+            sdPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+            Log.d("PATH", sdPath);
+        } else {
+            sdPath = getFilesDir() + "";
+            Toast.makeText(getApplicationContext(), sdPath, Toast.LENGTH_LONG).show();
+        }
+        return sdPath;
     }
 }

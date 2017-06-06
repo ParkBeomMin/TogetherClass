@@ -6,10 +6,12 @@
 
     <Spinner
         android:id="@+id/AFSpinner"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"></Spinner>
     
     <EditText
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:id="@+id/AFTitleEt"
         android:textSize="30dp"
         android:hint="Title"
@@ -18,11 +20,34 @@
         android:layout_marginBottom="15dp"
         android:singleLine="true"/>
     <EditText
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:id="@+id/AFContentEt"
         android:gravity="top"
         android:hint="Contents..."
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/cancelBtn"
+            android:background="#8b8787"
+            android:textColor="@color/White"
+            android:text="취소"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:background="#8b8787"
+            android:textColor="@color/White"
+            android:layout_weight="1"
+            android:id="@+id/confirmBtn"
+            android:text="확인"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

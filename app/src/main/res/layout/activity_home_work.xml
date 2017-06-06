@@ -81,6 +81,8 @@
     </ListView>
 
     <Button
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:id="@+id/HomeWorkAddBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
