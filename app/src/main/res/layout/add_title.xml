@@ -3,9 +3,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 <TextView
+    android:id="@+id/addtitleTv"
     android:paddingLeft="80dp"
     android:paddingRight="80dp"
-    android:textSize="20dp"
+    android:textSize="25dp"
     android:gravity="center_horizontal"
     android:text="등록하기"
     android:textColor="@color/White"

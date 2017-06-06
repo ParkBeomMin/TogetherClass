@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Environment;
@@ -16,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +31,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -45,7 +48,7 @@ import java.util.Collections;
 public class HomeWorkActivity extends AppCompatActivity {
     EditText e1;
     RadioButton r1, r2, r3;
-    Button DdayBtn;
+    Button DdayBtn, cancel, confirm;
     ListView listView;
     ArrayList<HomeWork> homeWorkArrayList = new ArrayList<HomeWork>();
     HomeWorkAdapter homeWorkAdapter;
@@ -66,6 +69,7 @@ public class HomeWorkActivity extends AppCompatActivity {
         setActionBar();
         init();
         ListViewMethod();
+        homeWorkAdapter.setSort(0);
     }
 
     void init() {
@@ -95,6 +99,9 @@ public class HomeWorkActivity extends AppCompatActivity {
         r1 = (RadioButton) view.findViewById(R.id.r1);
         r2 = (RadioButton) view.findViewById(R.id.r2);
         r3 = (RadioButton) view.findViewById(R.id.r3);
+
+        cancel = (Button) view.findViewById(R.id.cancelBtn);
+        confirm = (Button) view.findViewById(R.id.confirmBtn);
         DdayBtn = (Button) view.findViewById(R.id.DdayBtn);
         DdayBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -111,22 +118,42 @@ public class HomeWorkActivity extends AppCompatActivity {
     void ListViewMethod() {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(final AdapterView<?> adapterView, View view, int i, long l) {
                 final int position = i;
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeWorkActivity.this);
-                builder.setTitle("삭제")
-                        .setMessage("삭제하시겠습니까?")
-                        .setNegativeButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                File file = new File(MYPATH + "/" + homeWorkArrayList.get(position).Name);
-                                file.delete();
-                                homeWorkArrayList.remove(position);
-                                homeWorkAdapter.notifyDataSetChanged();
-                            }
-                        })
-                        .setPositiveButton("취소", null)
-                        .show();
+                View v = getLayoutInflater().inflate(R.layout.delete_free_list,null);
+                TextView title = (TextView) v.findViewById(R.id.deleteNickTv);
+                title.setText("삭제 하시겠습니까?");
+                title.setTextColor(Color.RED);
+                title.setPadding(0,30,0,10);
+                title.setGravity(Gravity.CENTER);
+                EditText e1 = (EditText) v.findViewById(R.id.deletePwEt);
+                e1.setVisibility(View.GONE);
+                Button cancel = (Button) v.findViewById(R.id.cancelBtn);
+                Button confirm = (Button) v.findViewById(R.id.confirmBtn);
+
+                View titleView = getLayoutInflater().inflate(R.layout.add_title, null);
+                TextView t1 = (TextView) titleView.findViewById(R.id.addtitleTv);
+                t1.setText("삭제");
+                final AlertDialog alertDialog = new AlertDialog.Builder(HomeWorkActivity.this).create();
+                alertDialog.setCustomTitle(titleView);
+                alertDialog.setView(v);
+                alertDialog.show();
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+                confirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        File file = new File(MYPATH + "/" + homeWorkArrayList.get(position).Name);
+                        file.delete();
+                        homeWorkArrayList.remove(position);
+                        homeWorkAdapter.notifyDataSetChanged();
+                        alertDialog.dismiss();
+                    }
+                });
                 return false;
             }
         });
@@ -135,45 +162,70 @@ public class HomeWorkActivity extends AppCompatActivity {
     public void MyOnClick(View v) {
         Intent intent;
         if (v.getId() == R.id.HomeWorkAddBtn) {
+            View titleView = getLayoutInflater().inflate(R.layout.add_title, null);
+            TextView t1 = (TextView) titleView.findViewById(R.id.addtitleTv);
+            t1.setText("일정");
             View view = View.inflate(this, R.layout.homework_add, null);
             init2(view);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("과제")
-                    .setView(view)
-                    .setNegativeButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            try {
-                                WriteData = e1.getText().toString() + "\n" + RadioCheck() + "\n" + PickYear + "-" + PickMonth + "-" + PickDay + "\n";
-                                BufferedWriter bw = new BufferedWriter(new FileWriter(MYPATH + "/" + e1.getText().toString(), false));
-                                bw.write(WriteData);
-                                bw.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+            final AlertDialog alertDialog;
+            alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setCustomTitle(titleView);
+            alertDialog.setView(view);
+            alertDialog.show();
+//            builder.setCustomTitle(titleView)
+//                    .setView(view)
+//                    .show();
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String M = PickMonth+"";
+                    if(PickMonth<10) {
+                        M = "0"+M;
+                    }
+                    String D = PickDay+"";
+                    if(PickDay<10){
+                        D = "0"+D;
+                    }
+                    try {
+                        WriteData = e1.getText().toString() + "\n" + RadioCheck() + "\n" + PickYear + "-" + M + "-" + D + "\n";
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(MYPATH + "/" + e1.getText().toString(), false));
+                        bw.write(WriteData);
+                        bw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-                            try {
-                                BufferedReader br = new BufferedReader(new FileReader(MYPATH + "/" + e1.getText().toString()));
-                                String readStr = "";
-                                String str = null;
-                                while ((str = br.readLine()) != null) {
-                                    readStr += str + "\n";
-                                }
-                                br.close();
-                                String s[] = readStr.split("\n");
-                                HomeWork homeWork = new HomeWork(s[0], s[1], s[2]);
-                                Log.d("BEOM5", s[0] + s[1] + s[2]);
-                                homeWorkArrayList.add(homeWork);
-                                homeWorkAdapter.notifyDataSetChanged();
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                    try {
+                        BufferedReader br = new BufferedReader(new FileReader(MYPATH + "/" + e1.getText().toString()));
+                        String readStr = "";
+                        String str = null;
+                        while ((str = br.readLine()) != null) {
+                            readStr += str + "\n";
                         }
-                    })
-                    .setPositiveButton("취소", null)
-                    .show();
+                        br.close();
+                        String s[] = readStr.split("\n");
+                        HomeWork homeWork = new HomeWork(s[0], s[1], s[2]);
+                        Log.d("BEOM5", s[0] + s[1] + s[2]);
+                        homeWorkArrayList.add(homeWork);
+                        homeWorkAdapter.setSort(0);
+                        homeWorkAdapter.notifyDataSetChanged();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    alertDialog.dismiss();
+
+                }
+            });
         } else if (v.getId() == R.id.GFreebtn) {
             intent = new Intent(HomeWorkActivity.this, FreeBoardActivity.class);
             startActivity(intent);
@@ -203,6 +255,7 @@ public class HomeWorkActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), year + "년" + (month + 1) + "월" + dayOfMonth + "일", Toast.LENGTH_LONG).show();
             PickYear = year;
             PickMonth = month;
+
             PickDay = dayOfMonth;
         }
     };

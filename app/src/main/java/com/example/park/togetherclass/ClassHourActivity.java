@@ -43,17 +43,21 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Scanner;
 
 public class ClassHourActivity extends AppCompatActivity {
     String Name, Nick, Pw;
     HorizontalScrollView s1;
-    Button b1, b2;
+    Button b1, b2, b3, b4;
     EditText e1;
     ArrayList<ClassHour> arrayList = new ArrayList<ClassHour>();
     ClassHourAdapter adapter;
@@ -75,12 +79,18 @@ public class ClassHourActivity extends AppCompatActivity {
         init();
         ListViewMethod();
         new BackgroundTask().execute();
-        if (Nick.equals("교수님"))
+        if (Nick.equals("교수님")) {
             myThread.start();
+            b3.setVisibility(View.GONE);
+            b4.setVisibility(View.GONE);
+            e1.setVisibility(View.GONE);
+        }
     }
 
     void init() {
+        b3 = (Button) findViewById(R.id.understandingButton);
         b2 = (Button) findViewById(R.id.recodeBtn);
+        b4 = (Button) findViewById(R.id.addQuestionButton);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
@@ -287,8 +297,8 @@ public class ClassHourActivity extends AppCompatActivity {
 //                            FLAG_CANCEL_CURRENT -.이전에 생성한 PendingIntent를 취소하고 새롭게 하나 만든다.
 //                            FLAG_NO_CREATE->현재 생성된 PendingIntent를 반환합니다.
 //                    FLAG_ONE_SHOT - > 이 플래그를 사용해 생성된 PendingIntent는 단 한번밖에 사용할 수 없습니다
-                builder.setSmallIcon(R.drawable.title).setTicker("HETT").setWhen(System.currentTimeMillis())
-                        .setNumber(1).setContentTitle("푸쉬 제목").setContentText("푸쉬내용")
+                builder.setSmallIcon(R.drawable.title).setTicker("함수").setWhen(System.currentTimeMillis())
+                        .setNumber(1).setContentTitle("한번 더 설명해주세요!").setContentText("한번 더 설명해주세요!")
                         .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingNotificationIntent).setAutoCancel(true).setOngoing(true);
                 //해당 부분은 API 4.1버전부터 작동합니다.
 
@@ -498,10 +508,17 @@ public class ClassHourActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if (Nick.equals("교수님")) {
-//질문내용 다 지우기
+            Toast.makeText(getApplicationContext(), "질문내용이 초기화 됩니다.", Toast.LENGTH_LONG).show();
+            Response.Listener<String> responseListener1 = new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                }
+            };
+            ClassAllDeleteRequest deleteRequest = new ClassAllDeleteRequest(responseListener1);
+            RequestQueue queue1 = Volley.newRequestQueue(ClassHourActivity.this);
+            queue1.add(deleteRequest);
         }
-        myThread.start();
-        myThread.stop();
         Intent intent = new Intent(ClassHourActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -517,6 +534,7 @@ public class ClassHourActivity extends AppCompatActivity {
                 myHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        new BackgroundTask().execute();
                         Push();
                         time--;
                     }

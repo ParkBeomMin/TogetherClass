@@ -183,48 +183,60 @@ public class FreeBoardActivity extends AppCompatActivity {
                 final String pw = selectfreeArrayList.get(position).Pw;
                 final int pos = position;
                 LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.add_title, null);
+                TextView titleTv = (TextView) titleView.findViewById(R.id.addtitleTv);
+                titleTv.setText("삭제");
                 View deleteView = inflater.inflate(R.layout.delete_free_list, null);
                 final TextView t1 = (TextView) deleteView.findViewById(R.id.deleteNickTv);
                 final EditText e1 = (EditText) deleteView.findViewById(R.id.deletePwEt);
+                Button cancel = (Button) deleteView.findViewById(R.id.cancelBtn);
+                Button confirm = (Button) deleteView.findViewById(R.id.confirmBtn);
                 t1.setText("작성자 : " + nick + "님");
-                AlertDialog.Builder builder = new AlertDialog.Builder(FreeBoardActivity.this);
-                builder.setTitle("삭제")
-                        .setView(deleteView)
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                t1.setPadding(10,30,0,0);
+                final AlertDialog alertDialog = new AlertDialog.Builder(FreeBoardActivity.this).create();
+                alertDialog.setCustomTitle(titleView);
+                alertDialog.setView(deleteView);
+                alertDialog.show();
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+                confirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
 
-                                    @Override
-                                    public void onResponse(String response) {
-                                        try {
-                                            boolean success = false;
-                                            if (pw.equals(e1.getText().toString())) {
-                                                success = true;
-                                            }
-                                            if (success) {
-                                                Toast.makeText(getApplicationContext(), "삭제되었습니다.", Toast.LENGTH_LONG).show();
-                                                freeAdapter.notifyDataSetChanged();
-                                                selectfreeArrayList.remove(pos);
-                                                selecfreeAdapter.notifyDataSetChanged();
-                                                new BackgroundTask().execute();
-                                            } else {
-                                                Toast.makeText(getApplicationContext(), "비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show();
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        BackgroundTask task = new BackgroundTask();
-                                        task.execute();
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    boolean success = false;
+                                    if (pw.equals(e1.getText().toString())) {
+                                        success = true;
                                     }
-                                };
-                                FreeDeleteRequest deleteRequest = new FreeDeleteRequest(title, nick, date, e1.getText().toString(), responseListener);
-                                RequestQueue queue = Volley.newRequestQueue(FreeBoardActivity.this);
-                                queue.add(deleteRequest);
+                                    if (success) {
+                                        Toast.makeText(getApplicationContext(), "삭제되었습니다.", Toast.LENGTH_LONG).show();
+                                        freeAdapter.notifyDataSetChanged();
+                                        selectfreeArrayList.remove(pos);
+                                        selecfreeAdapter.notifyDataSetChanged();
+                                        new BackgroundTask().execute();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                BackgroundTask task = new BackgroundTask();
+                                task.execute();
                             }
-                        })
-                        .setNegativeButton("취소", null)
-                        .show();
+                        };
+                        FreeDeleteRequest deleteRequest = new FreeDeleteRequest(title, nick, date, e1.getText().toString(), responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(FreeBoardActivity.this);
+                        queue.add(deleteRequest);
+                        alertDialog.dismiss();
+                    }
+                });
                 return true;
             }
         });

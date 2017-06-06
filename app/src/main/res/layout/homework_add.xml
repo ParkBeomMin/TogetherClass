@@ -13,10 +13,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="과제를 입력해주세요." />
+            android:hint="일정을 입력해주세요." />
 
         <Button
+            android:textColor="@color/White"
             android:id="@+id/DdayBtn"
+            android:background="@color/MyBlue"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="기한 설정"></Button>
@@ -52,4 +54,28 @@
             android:text="개인 일정"
             android:textColor="@color/Blue" />
     </RadioGroup>
+
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/cancelBtn"
+            android:background="#8b8787"
+            android:textColor="@color/White"
+            android:text="취소"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:background="#8b8787"
+            android:textColor="@color/White"
+            android:layout_weight="1"
+            android:id="@+id/confirmBtn"
+            android:text="확인"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>
