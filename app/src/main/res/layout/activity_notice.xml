@@ -71,6 +71,15 @@
         </GridLayout>
     </HorizontalScrollView>
 
+
+    <ListView
+        android:layout_weight="1"
+        android:id="@+id/NoticeList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
     <Button
         android:onClick="MyOnClick"
         android:id="@+id/NoticeBtn"
@@ -78,12 +87,9 @@
         android:layout_height="wrap_content"
         android:text="공지하기"
         android:textSize="20dp"
+        android:textColor="@color/White"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:background="@color/Button"
         android:visibility="gone" />
-
-    <ListView
-        android:id="@+id/NoticeList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ListView>
 </LinearLayout>

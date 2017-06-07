@@ -354,9 +354,6 @@ public class HomeWorkActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
             Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
-//            intent.putExtra("Name", Name);
-//            intent.putExtra("Nick", Nick);
-//            intent.putExtra("Time", Time);
             startActivity(intent);
         } else if (item.getItemId() == 2) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);

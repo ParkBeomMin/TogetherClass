@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_start"
-    android:background="@color/White"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#33304d"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context="com.example.park.togetherclass.StartActivity">
+
     <ImageView
-        android:layout_marginRight="50dp"
-        android:src="@drawable/start"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="150dp"/>
-</RelativeLayout>
+
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/start" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:indeterminateTint="@color/White"
+        android:layout_marginTop="15dp" />
+    <TextView
+        android:id="@+id/percent"
+        android:textColor="@color/White"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

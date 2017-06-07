@@ -25,6 +25,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -91,47 +92,72 @@ public class NoticeActivity extends AppCompatActivity {
         l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                View titleView = getLayoutInflater().inflate(R.layout.add_title, null);
+                TextView t1 = (TextView) titleView.findViewById(R.id.addtitleTv);
+                t1.setText("공지사항");
+                View v = getLayoutInflater().inflate(R.layout.notice_list, null);
+                TextView t2 = (TextView) v.findViewById(R.id.notice_titleTv);
+                t2.setText("[" + arrayList.get(position).Title + "]");
+                TextView t3 = (TextView) v.findViewById(R.id.notice_contentTv);
+                t3.setText(arrayList.get(position).Content);
                 AlertDialog.Builder builder = new AlertDialog.Builder(NoticeActivity.this);
-                builder.setTitle(arrayList.get(position).Title)
-                        .setMessage(arrayList.get(position).Content)
-                        .setNegativeButton("확인", null)
+                builder.setCustomTitle(titleView)
+                        .setView(v).setNegativeButton("확인", null)
                         .show();
             }
         });
+        if (Nick.equals("교수님")) {
+            l1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    return false;
+                }
+            });
+        }
     }
 
     public void MyOnClick(View v) {
         Intent intent;
         if (v.getId() == R.id.NoticeBtn) {
+            View titleView = getLayoutInflater().inflate(R.layout.add_title, null);
+            TextView t1 = (TextView) titleView.findViewById(R.id.addtitleTv);
+            t1.setText("등록하기");
             View view = getLayoutInflater().inflate(R.layout.add_free_list, null);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             final Spinner spinner1 = (Spinner) view.findViewById(R.id.AFSpinner);
             spinner1.setVisibility(View.GONE);
             final EditText e1 = (EditText) view.findViewById(R.id.AFTitleEt);
             final EditText e2 = (EditText) view.findViewById(R.id.AFContentEt);
             final String date = doCurrentDate();
-            builder.setTitle("등록하기")
-                    .setView(view)
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                        @Override
-                                        public void onResponse(String response) {
-                                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
-                                            BackgroundTask task = new BackgroundTask();
-                                            task.execute();
-                                        }
-                                    };
-                                    NoticeAddRequest write = new NoticeAddRequest(e1.getText().toString(), e2.getText().toString(), date, Pw, "모앱", responseListener);
-                                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                                    queue.add(write);
-                                }
-                            }
-
-                    )
-                    .setNegativeButton("취소", null)
-                    .show();
+            Button cancel = (Button) view.findViewById(R.id.cancelBtn);
+            Button confirm = (Button) view.findViewById(R.id.confirmBtn);
+            alertDialog.setCustomTitle(titleView);
+            alertDialog.setView(view);
+            alertDialog.show();
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
+                            BackgroundTask task = new BackgroundTask();
+                            task.execute();
+                        }
+                    };
+                    NoticeAddRequest write = new NoticeAddRequest(e1.getText().toString(), e2.getText().toString(), date, Pw, "모앱", responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                    queue.add(write);
+                    alertDialog.dismiss();
+                }
+            });
         } else if (v.getId() == R.id.GClassbtn) {
             intent = new Intent(NoticeActivity.this, ClassHourActivity.class);
             startActivity(intent);
@@ -272,6 +298,7 @@ public class NoticeActivity extends AppCompatActivity {
         });
         actionBar.setCustomView(view);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, "내 정보");

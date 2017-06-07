@@ -477,7 +477,7 @@ public class FreeBoardActivity extends AppCompatActivity {
             intent.putExtra("Name", Name);
             intent.putExtra("Nick", Nick);
 //            intent.putExtra("Time", Time);
-            startActivity(intent);
+//            startActivity(intent);
         } else if (item.getItemId() == 2) {
             Intent intent = new Intent(FreeBoardActivity.this, LoginActivity.class);
             intent.putExtra("Logout", "Logout");

@@ -38,6 +38,7 @@
             android:textSize="10dp" />
 
         <TextView
+            android:id="@+id/NickText"
             android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

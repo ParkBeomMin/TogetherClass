@@ -3,15 +3,22 @@ package com.example.park.togetherclass;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +27,8 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -36,9 +45,10 @@ public class MeetingActivity extends AppCompatActivity {
     GridView g1;
     ArrayList<Meet> arrayList = new ArrayList<Meet>();
     MeetAdapter adapter;
-String Name, Nick;
+    String Name, Nick;
     Button b1;
     HorizontalScrollView s1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +60,27 @@ String Name, Nick;
     }
 
     void init() {
+        View titleView = getLayoutInflater().inflate(R.layout.add_title, null);
+        TextView t1 = (TextView) titleView.findViewById(R.id.addtitleTv);
+        t1.setText("메일 보내기 & 사이트 접속하기");
+        t1.setTextSize(20);
+        View v = getLayoutInflater().inflate(R.layout.free_list, null);
+        ImageView i1 = (ImageView) v.findViewById(R.id.freeimage) ;
+        i1.setVisibility(View.GONE);
+        TextView t2 = (TextView) v.findViewById(R.id.freetitle);
+        t2.setText(Html.fromHtml("<font color=\"#ff0000\">짧게</font><font color=\"#000000\">클릭 시 메일보내기</font>"));
+        t2.setTextSize(15);
+        TextView t3 = (TextView) v.findViewById(R.id.freenick);
+        t3.setVisibility(View.GONE);
+        TextView t4 = (TextView) v.findViewById(R.id.freedate);
+        t4.setVisibility(View.GONE);
+        TextView t5 = (TextView) v.findViewById(R.id.NickText);
+        t5.setText(Html.fromHtml("<font color=\"#ff0000\">길게</font><font color=\"#000000\">클릭 시 사이트접속</font>"));
+        t5.setTextSize(15);
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setCustomTitle(titleView);
+        alertDialog.setView(v);
+        alertDialog.show();
         b1 = (Button) findViewById(R.id.GMeetbtn);
         b1.setEnabled(true);
         b1.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
@@ -61,12 +92,12 @@ String Name, Nick;
                 s1.smoothScrollBy(400, 0);
             }
         }, 200);
-        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingActivity.this);
-        builder.setTitle("메일보내기 & 사이트 접속하기")
-                .setMessage("짧게 클릭 시 메일보내기\n" +
-                        "길게 클릭 시 사이트 접속")
-                .setNegativeButton("확인", null)
-                .show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingActivity.this);
+//        builder.setTitle("메일보내기 & 사이트 접속하기")
+//                .setMessage(t1.getText().toString() + "\n" +
+//                        Html.fromHtml("<font color=\"#ff0000\">길게</font>") + "클릭 시 사이트 접속")
+//                .setNegativeButton("확인", null)
+//                .show();
         g1 = (GridView) findViewById(R.id.meetingList);
         adapter = new MeetAdapter(arrayList, getApplication());
         g1.setAdapter(adapter);
@@ -211,6 +242,7 @@ String Name, Nick;
         });
         actionBar.setCustomView(view);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, "내 정보");
@@ -238,6 +270,7 @@ String Name, Nick;
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

@@ -28,7 +28,9 @@
             android:textColor="@color/White"
             android:text="취소"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" /><View
+        android:layout_width="1dp"
+        android:layout_height="1dp"/>
         <Button
             android:background="#8b8787"
             android:textColor="@color/White"
