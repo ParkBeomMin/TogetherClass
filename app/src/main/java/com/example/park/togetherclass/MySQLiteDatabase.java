@@ -19,7 +19,8 @@ public class MySQLiteDatabase extends SQLiteOpenHelper {
                 "num integer primary key autoincrement," +
                 "id text not null," +
                 "name text not null," +
-                "password text not null);" ;
+                "password text not null," +
+                "subject text);" ;
 //        String sql = "drop table if exists professor";
 
         db.execSQL(sql);

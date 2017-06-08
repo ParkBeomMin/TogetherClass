@@ -16,11 +16,12 @@ public class NoticeAddRequest extends StringRequest {
 
     private Map<String, String> parameters;
 
-    public NoticeAddRequest(String NoticeTitle, String NoticeContent, String NoticeDate, String NoticePw, String NoticeSubject, Response.Listener<String> listener) {
+    public NoticeAddRequest(String NoticeTitle, String NoticeContent, String NoticeName, String NoticeDate, String NoticePw, String NoticeSubject, Response.Listener<String> listener) {
         super(Request.Method.POST, URL, listener, null);
         parameters = new HashMap<>();
         parameters.put("NoticeTitle", NoticeTitle);
         parameters.put("NoticeContent", NoticeContent);
+        parameters.put("NoticeName", NoticeName);
         parameters.put("NoticeDate", NoticeDate);
         parameters.put("NoticePw", NoticePw);
         parameters.put("NoticeSubject", NoticeSubject);

@@ -29,8 +29,8 @@ public class MyManageDB {
         return cursor;
     }
 
-    public void execINSERTProfessor(String Id, String Name, String Pw) {
-        String sql = "INSERT INTO professor values ( null, '" + Id + "','" + Name + "','" + Pw + "')";
+    public void execINSERTProfessor(String Id, String Name, String Pw, String subject) {
+        String sql = "INSERT INTO professor values ( null, '" + Id + "','" + Name + "','" + Pw + "','" +subject+"')";
         myDB2.execSQL(sql);
     }
 }

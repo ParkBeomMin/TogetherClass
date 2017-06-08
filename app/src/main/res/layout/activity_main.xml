@@ -37,30 +37,32 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/MClassHourBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/White"
-                    android:onClick="MyOnClick"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/classhour" />
+            <ImageButton
+                android:id="@+id/MClassHourBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:scaleType="fitXY"
+                android:src="@drawable/classhour" />
 
-                <ImageButton
-                    android:id="@+id/MFreeBoardBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/White"
-                    android:onClick="MyOnClick"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/freelist" />
+            <ImageButton
+                android:id="@+id/MNoticeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:scaleType="fitXY"
+                android:src="@drawable/notice"
+                android:text="과목공지" />
 
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/line1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -68,26 +70,25 @@
 
 
             <ImageButton
-                android:background="@color/White"
-                android:src="@drawable/notice"
-                android:scaleType="fitXY"
-                android:id="@+id/MNoticeBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="MyOnClick"
-                android:text="과목공지" />
-
-            <ImageButton
-                android:background="@color/White"
-                android:scaleType="fitXY"
-                android:src="@drawable/professor"
                 android:id="@+id/MMeetingBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@color/White"
                 android:onClick="MyOnClick"
+                android:scaleType="fitXY"
+                android:src="@drawable/professor"
                 android:text="교수 현황" />
+
+            <ImageButton
+                android:id="@+id/MFreeBoardBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/White"
+                android:onClick="MyOnClick"
+                android:scaleType="fitXY"
+                android:src="@drawable/freelist" />
         </LinearLayout>
 
         <LinearLayout
@@ -96,21 +97,25 @@
             android:layout_weight="1">
 
 
-            <Button
+            <ImageButton
                 android:id="@+id/MHomePageBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@color/White"
                 android:onClick="MyOnClick"
-                android:text="포탈" />
+                android:scaleType="fitXY"
+                android:src="@drawable/potal" />
 
-
-            <Button
+            <ImageButton
                 android:id="@+id/MHomeWorkBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@color/White"
                 android:onClick="MyOnClick"
+                android:scaleType="fitXY"
+                android:src="@drawable/schedule"
                 android:text="스케줄" />
         </LinearLayout>
 

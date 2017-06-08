@@ -49,7 +49,7 @@ public class NoticeActivity extends AppCompatActivity {
     ListView l1;
     ArrayList<Notice> arrayList = new ArrayList<Notice>();
     NoticeAdapter adapter;
-    String Name, Nick, Pw;
+    String Name, Nick, Pw, Subject;
     Button b1, b2, b3, b4;
     HorizontalScrollView s1;
 
@@ -82,6 +82,7 @@ public class NoticeActivity extends AppCompatActivity {
         Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
         Pw = info.getString("Pw", null);
+        Subject = info.getString("Subject", null);
         if (Nick.contains("교수님")) {
             b1.setVisibility(View.VISIBLE);
             b3.setVisibility(View.GONE);
@@ -110,11 +111,64 @@ public class NoticeActivity extends AppCompatActivity {
                         .show();
             }
         });
-        if (Nick.equals("교수님")) {
+        if (Nick.contains("교수님")) {
             l1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    return false;
+                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                    LayoutInflater inflater = getLayoutInflater();
+                    View titleView = inflater.inflate(R.layout.add_title, null);
+                    TextView titleTv = (TextView) titleView.findViewById(R.id.addtitleTv);
+                    titleTv.setText("삭제");
+                    View deleteView = inflater.inflate(R.layout.delete_free_list, null);
+                    final TextView t1 = (TextView) deleteView.findViewById(R.id.deleteNickTv);
+                    final EditText e1 = (EditText) deleteView.findViewById(R.id.deletePwEt);
+                    Button cancel = (Button) deleteView.findViewById(R.id.cancelBtn);
+                    Button confirm = (Button) deleteView.findViewById(R.id.confirmBtn);
+                    t1.setText("작성자 : " + arrayList.get(position).Nick);
+                    t1.setPadding(10, 30, 0, 0);
+                    final AlertDialog alertDialog = new AlertDialog.Builder(NoticeActivity.this).create();
+                    alertDialog.setCustomTitle(titleView);
+                    alertDialog.setView(deleteView);
+                    alertDialog.show();
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                        }
+                    });
+                    confirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        boolean success = false;
+                                        if (arrayList.get(position).Pw.equals(e1.getText().toString())) {
+                                            success = true;
+                                        }
+                                        if (success) {
+                                            Toast.makeText(getApplicationContext(), "삭제되었습니다.", Toast.LENGTH_LONG).show();
+                                            new BackgroundTask().execute();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    BackgroundTask task = new BackgroundTask();
+                                    task.execute();
+                                }
+                            };
+                            NoticeDeleteRequest deleteRequest = new NoticeDeleteRequest(arrayList.get(position).Title, arrayList.get(position).Date,
+                                    arrayList.get(position).Nick, e1.getText().toString(), arrayList.get(position).Subject, responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(NoticeActivity.this);
+                            queue.add(deleteRequest);
+                            alertDialog.dismiss();
+                        }
+                    });
+                    return true;
                 }
             });
         }
@@ -156,7 +210,7 @@ public class NoticeActivity extends AppCompatActivity {
                             task.execute();
                         }
                     };
-                    NoticeAddRequest write = new NoticeAddRequest(e1.getText().toString(), e2.getText().toString(), date, Pw, "모앱", responseListener);
+                    NoticeAddRequest write = new NoticeAddRequest(e1.getText().toString(), e2.getText().toString(), Nick, date, Pw, Subject, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                     queue.add(write);
                     alertDialog.dismiss();
@@ -227,15 +281,16 @@ public class NoticeActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
                 int count = 0;
-                String NoticeContent, NoticeTitle, NoticeSubject, NoticeDate, NoticePw;
+                String NoticeContent, NoticeTitle, NoticeSubject, NoticeDate, NoticePw, NoticeName;
                 while (count < jsonArray.length()) {
                     JSONObject object = jsonArray.getJSONObject(count);
                     NoticeContent = object.getString("NoticeContent");
                     NoticeTitle = object.getString("NoticeTitle");
+                    NoticeName = object.getString("NoticeName");
                     NoticeDate = object.getString("NoticeDate");
                     NoticePw = object.getString("NoticePw");
                     NoticeSubject = object.getString("NoticeSubject");
-                    Notice notice = new Notice(NoticeTitle, NoticeContent, NoticeDate, NoticePw, NoticeSubject, Nick);
+                    Notice notice = new Notice(NoticeTitle, NoticeContent, NoticeDate, NoticePw, NoticeSubject, NoticeName);
                     arrayList.add(notice);
                     count++;
                 }

@@ -41,6 +41,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton b1, b2, b3;
+    LinearLayout l1;
     private long lastTimeBackPressed;
     boolean auto;
     String Nick, Name, Time;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void init() {
+        l1 = (LinearLayout) findViewById(R.id.line1);
         b1 = (ImageButton) findViewById(R.id.MFreeBoardBtn);
         b2 = (ImageButton) findViewById(R.id.MMeetingBtn);
         listView = (ListView) findViewById(R.id.weather);
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             if (Nick.contains("교수님")) {
                 b1.setVisibility(View.GONE);
                 b2.setVisibility(View.GONE);
+                l1.setVisibility(View.GONE);
             }
         if (auto) {
             Snackbar.make(getWindow().getDecorView().getRootView(), "자동로그인되었습니다.", Snackbar.LENGTH_SHORT).show();

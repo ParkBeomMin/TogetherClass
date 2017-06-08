@@ -32,13 +32,14 @@ public class LoginActivity extends AppCompatActivity {
     EditText NameEt, NickEt, PwEt;
     RadioButton r1, r2;
     CheckBox c1;
-    String Name, Nick, Pw;
+    String Name, Nick, Pw, Subject;
     Boolean auto;
     String Time;
     MyManageDB myManageDB;
     ArrayList<String> ProfessorId = new ArrayList<String>();
     ArrayList<String> ProfessorName = new ArrayList<String>();
     ArrayList<String> ProfessorPw = new ArrayList<String>();
+    ArrayList<String> ProfessorSub = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +52,11 @@ public class LoginActivity extends AppCompatActivity {
 
     void init() {
         myManageDB = MyManageDB.getInstance(this);
-        myManageDB.execINSERTProfessor("001", "장소연 교수님", "111");
-        myManageDB.execINSERTProfessor("002", "김정선 교수님", "111");
-        myManageDB.execINSERTProfessor("003", "조성현 교수님", "111");
-        myManageDB.execINSERTProfessor("004", "김태형 교수님", "111");
-        myManageDB.execINSERTProfessor("005", "김영훈 교수님", "111");
+        myManageDB.execINSERTProfessor("001", "장소연 교수님", "111", "모앱");
+        myManageDB.execINSERTProfessor("002", "박성주 교수님", "111", "컴구");
+        myManageDB.execINSERTProfessor("003", "조성현 교수님", "111", "데통");
+        myManageDB.execINSERTProfessor("004", "김태형 교수님", "111", "알고리즘");
+        myManageDB.execINSERTProfessor("005", "김영훈 교수님", "111", "디비");
         String sql = "SELECT id FROM professor";
         Cursor recordset = myManageDB.execSELECTStudent(sql);
         recordset.moveToFirst();
@@ -86,6 +87,16 @@ public class LoginActivity extends AppCompatActivity {
             ProfessorPw.add(str);
         } while (recordset.moveToNext());
         recordset.close();
+        sql = "SELECT subject FROM professor";
+        recordset = myManageDB.execSELECTStudent(sql);
+        recordset.moveToFirst();
+        str = "";
+        do {
+            str = recordset.getString(0);
+            Log.d("BEOM16", str);
+            ProfessorSub.add(str);
+        } while (recordset.moveToNext());
+        recordset.close();
         Intent intent = getIntent();
         if (intent.getStringExtra("Logout") != null) {
             String logout = intent.getStringExtra("Logout");
@@ -110,13 +121,9 @@ public class LoginActivity extends AppCompatActivity {
                 t1 = (TextView) findViewById(R.id.NameTv);
                 t2 = (TextView) findViewById(R.id.NickTv);
                 if (b) {
-
-//                    Pw = Pro[3];
-//                    Nick = Pro[2];
-//                    Name = Pro[1];
                     t1.setText("수업코드");
                     t2.setVisibility(View.GONE);
-                    NickEt.setText("교수님님");
+                    NickEt.setText("교수님");
                     NickEt.setVisibility(View.GONE);
                 } else {
                     t1.setText("NAME");
@@ -198,6 +205,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Name = ProfessorId.get(i).toString();
                                 Nick = ProfessorName.get(i).toString();
                                 Pw = ProfessorPw.get(i).toString();
+                                Subject = ProfessorSub.get(i).toString();
                             }
                         }
                         if (NameEt.getText().toString().equals(Name) && PwEt.getText().toString().equals(Pw)) {
@@ -206,6 +214,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("Name", NameEt.getText().toString());
                             editor.putString("Nick", Nick);
                             editor.putString("Pw", PwEt.getText().toString());
+                            editor.putString("Subject", Subject);
                             if (c1.isChecked())
                                 editor.putBoolean("auto", true);
                             if (NameEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {

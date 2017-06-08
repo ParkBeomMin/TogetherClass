@@ -16,11 +16,12 @@ public class NoticeDeleteRequest extends StringRequest{
 
     private Map<String, String> parameters;
 
-    public NoticeDeleteRequest(String NoticeTitle, String NoticeDate, String NoticePw, String NoticeSubject, Response.Listener<String> listener) {
+    public NoticeDeleteRequest(String NoticeTitle, String NoticeDate, String NoticeName, String NoticePw, String NoticeSubject, Response.Listener<String> listener) {
         super(Request.Method.POST, URL, listener, null);
         parameters = new HashMap<>();
         parameters.put("NoticeTitle", NoticeTitle);
         parameters.put("NoticeDate", NoticeDate);
+        parameters.put("NoticeName", NoticeName);
         parameters.put("NoticePw", NoticePw);
         parameters.put("NoticeSubject", NoticeSubject);
     }
