@@ -50,7 +50,7 @@ public class NoticeActivity extends AppCompatActivity {
     ArrayList<Notice> arrayList = new ArrayList<Notice>();
     NoticeAdapter adapter;
     String Name, Nick, Pw;
-    Button b1, b2;
+    Button b1, b2, b3, b4;
     HorizontalScrollView s1;
 
 
@@ -67,7 +67,8 @@ public class NoticeActivity extends AppCompatActivity {
     void init() {
         b1 = (Button) findViewById(R.id.NoticeBtn);
         b2 = (Button) findViewById(R.id.GNoticebtn);
-        b2.setEnabled(true);
+        b3 = (Button) findViewById(R.id.GMeetbtn);
+        b4 = (Button) findViewById(R.id.GFreebtn);
         b2.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
         b2.setTextColor(getResources().getColor(R.color.White));
         s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
@@ -81,8 +82,11 @@ public class NoticeActivity extends AppCompatActivity {
         Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
         Pw = info.getString("Pw", null);
-        if (Nick.equals("교수님"))
+        if (Nick.contains("교수님")) {
             b1.setVisibility(View.VISIBLE);
+            b3.setVisibility(View.GONE);
+            b4.setVisibility(View.GONE);
+        }
         l1 = (ListView) findViewById(R.id.NoticeList);
         adapter = new NoticeAdapter(arrayList, getApplication());
         l1.setAdapter(adapter);
@@ -231,7 +235,7 @@ public class NoticeActivity extends AppCompatActivity {
                     NoticeDate = object.getString("NoticeDate");
                     NoticePw = object.getString("NoticePw");
                     NoticeSubject = object.getString("NoticeSubject");
-                    Notice notice = new Notice(NoticeTitle, NoticeContent, NoticeDate, NoticePw, NoticeSubject);
+                    Notice notice = new Notice(NoticeTitle, NoticeContent, NoticeDate, NoticePw, NoticeSubject, Nick);
                     arrayList.add(notice);
                     count++;
                 }

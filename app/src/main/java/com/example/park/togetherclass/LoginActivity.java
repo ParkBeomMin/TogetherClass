@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.support.design.widget.Snackbar;
@@ -14,6 +16,7 @@ import android.support.v4.os.CancellationSignal;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,6 +24,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
     TextView t1, t2;
@@ -30,7 +35,10 @@ public class LoginActivity extends AppCompatActivity {
     String Name, Nick, Pw;
     Boolean auto;
     String Time;
-
+    MyManageDB myManageDB;
+    ArrayList<String> ProfessorId = new ArrayList<String>();
+    ArrayList<String> ProfessorName = new ArrayList<String>();
+    ArrayList<String> ProfessorPw = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,42 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void init() {
+        myManageDB = MyManageDB.getInstance(this);
+        myManageDB.execINSERTProfessor("001", "장소연 교수님", "111");
+        myManageDB.execINSERTProfessor("002", "김정선 교수님", "111");
+        myManageDB.execINSERTProfessor("003", "조성현 교수님", "111");
+        myManageDB.execINSERTProfessor("004", "김태형 교수님", "111");
+        myManageDB.execINSERTProfessor("005", "김영훈 교수님", "111");
+        String sql = "SELECT id FROM professor";
+        Cursor recordset = myManageDB.execSELECTStudent(sql);
+        recordset.moveToFirst();
+        String str = "";
+        do {
+            str = recordset.getString(0);
+            Log.d("BEOM16", str);
+            ProfessorId.add(str);
+        } while (recordset.moveToNext());
+        recordset.close();
+        sql = "SELECT name FROM professor";
+        recordset = myManageDB.execSELECTStudent(sql);
+        recordset.moveToFirst();
+        str = "";
+        do {
+            str = recordset.getString(0);
+            Log.d("BEOM16", str);
+            ProfessorName.add(str);
+        } while (recordset.moveToNext());
+        recordset.close();
+        sql = "SELECT password FROM professor";
+        recordset = myManageDB.execSELECTStudent(sql);
+        recordset.moveToFirst();
+        str = "";
+        do {
+            str = recordset.getString(0);
+            Log.d("BEOM16", str);
+            ProfessorPw.add(str);
+        } while (recordset.moveToNext());
+        recordset.close();
         Intent intent = getIntent();
         if (intent.getStringExtra("Logout") != null) {
             String logout = intent.getStringExtra("Logout");
@@ -66,9 +110,13 @@ public class LoginActivity extends AppCompatActivity {
                 t1 = (TextView) findViewById(R.id.NameTv);
                 t2 = (TextView) findViewById(R.id.NickTv);
                 if (b) {
+
+//                    Pw = Pro[3];
+//                    Nick = Pro[2];
+//                    Name = Pro[1];
                     t1.setText("수업코드");
                     t2.setVisibility(View.GONE);
-                    NickEt.setText("교수님");
+                    NickEt.setText("교수님님");
                     NickEt.setVisibility(View.GONE);
                 } else {
                     t1.setText("NAME");
@@ -98,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
     public void MyOnClick(View v) {
         switch (v.getId()) {
             case R.id.loginButton:
-                if (!NickEt.getText().toString().equals("교수님")) {
+                if (!NickEt.getText().toString().contains("교수님")) {
                     if (NameEt.getText().toString().length() == 0 || NickEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
                         if (NameEt.getText().toString().length() == 0) {
                             NameEt.requestFocus();
@@ -121,6 +169,9 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("Pw", PwEt.getText().toString());
                         if (c1.isChecked())
                             editor.putBoolean("auto", true);
+                        if (NameEt.getText().toString().length() == 0 || NickEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
+                            editor.putBoolean("auto", false);
+                        }
                         editor.commit();
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -142,21 +193,36 @@ public class LoginActivity extends AppCompatActivity {
                             PwEt.setHint("비밀번호를 입력해주세요!");
                         }
                     } else {
-                        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = info.edit();
-                        editor.putString("Name", NameEt.getText().toString());
-                        editor.putString("Nick", NickEt.getText().toString());
-                        editor.putString("Pw", PwEt.getText().toString());
-                        if (c1.isChecked())
-                            editor.putBoolean("auto", true);
-                        editor.commit();
+                        for (int i = 0; i < ProfessorId.size(); i++) {
+                            if (NameEt.getText().toString().equals(ProfessorId.get(i).toString())) {
+                                Name = ProfessorId.get(i).toString();
+                                Nick = ProfessorName.get(i).toString();
+                                Pw = ProfessorPw.get(i).toString();
+                            }
+                        }
+                        if (NameEt.getText().toString().equals(Name) && PwEt.getText().toString().equals(Pw)) {
+                            SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = info.edit();
+                            editor.putString("Name", NameEt.getText().toString());
+                            editor.putString("Nick", Nick);
+                            editor.putString("Pw", PwEt.getText().toString());
+                            if (c1.isChecked())
+                                editor.putBoolean("auto", true);
+                            if (NameEt.getText().toString().length() == 0 || PwEt.getText().toString().length() == 0) {
+                                editor.putBoolean("auto", false);
+                            }
 
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.putExtra("Name", NameEt.getText().toString());
-                        intent.putExtra("Nick", NickEt.getText().toString());
-                        intent.putExtra("Pw", PwEt.getText().toString());
-                        startActivity(intent);
-                        finish();
+                            editor.commit();
+
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("Name", NameEt.getText().toString());
+                            intent.putExtra("Nick", NickEt.getText().toString());
+                            intent.putExtra("Pw", PwEt.getText().toString());
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(this, "수업코드 및 비밀번호가 잘못되었습니다!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
                 break;

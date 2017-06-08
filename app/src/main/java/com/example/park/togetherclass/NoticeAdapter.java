@@ -50,12 +50,11 @@ public class NoticeAdapter extends BaseAdapter {
         TextView t3 = (TextView) convertView.findViewById(R.id.freedate);
         TextView t4 = (TextView) convertView.findViewById(R.id.freeContent);
 
-        t2.setVisibility(View.GONE);
-
         Notice one;
         one = arrayList.get(position);
         t1.setText(one.Title);
         t3.setText(one.Date);
+        t2.setText(one.Nick);
 
 
         return  convertView;

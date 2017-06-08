@@ -16,6 +16,7 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -62,7 +63,7 @@ import java.util.Scanner;
 public class ClassHourActivity extends AppCompatActivity {
     String Name, Nick, Pw;
     HorizontalScrollView s1;
-    Button b1, b2, b3, b4;
+    Button b1, b2, b3, b4, b5, b6;
     EditText e1;
     ArrayList<ClassHour> arrayList = new ArrayList<ClassHour>();
     ClassHourAdapter adapter;
@@ -70,7 +71,6 @@ public class ClassHourActivity extends AppCompatActivity {
     String Sign = "";
     final String RECORDED_FILE = getExternalPath() + "TCR";
     MediaRecorder recorder;
-
 
 
     @Override
@@ -83,10 +83,12 @@ public class ClassHourActivity extends AppCompatActivity {
         init();
         ListViewMethod();
         new BackgroundTask().execute();
-        if (Nick.equals("교수님")) {
+        if (Nick.contains("교수님")) {
             myThread.start();
             b3.setVisibility(View.GONE);
             b4.setVisibility(View.GONE);
+            b5.setVisibility(View.GONE);
+            b6.setVisibility(View.GONE);
             e1.setVisibility(View.GONE);
         }
     }
@@ -95,6 +97,8 @@ public class ClassHourActivity extends AppCompatActivity {
         b3 = (Button) findViewById(R.id.understandingButton);
         b2 = (Button) findViewById(R.id.recodeBtn);
         b4 = (Button) findViewById(R.id.addQuestionButton);
+        b5 = (Button) findViewById(R.id.GFreebtn);
+        b6 = (Button) findViewById(R.id.GMeetbtn);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
@@ -149,7 +153,7 @@ public class ClassHourActivity extends AppCompatActivity {
                 final String pw = arrayList.get(position).Pw;
                 final int pos = position;
                 LayoutInflater inflater = getLayoutInflater();
-                View titleView = inflater.inflate(R.layout.add_title,null);
+                View titleView = inflater.inflate(R.layout.add_title, null);
                 TextView title = (TextView) titleView.findViewById(R.id.addtitleTv);
                 title.setText("삭제");
                 View deleteView = inflater.inflate(R.layout.delete_free_list, null);
@@ -255,18 +259,26 @@ public class ClassHourActivity extends AppCompatActivity {
             e1.setText("");
         } else if (v.getId() == R.id.recodeBtn) {
             if (b2.getText().toString().equals("녹음하기")) {
+//                Intent intent11 = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+//                startActivity(intent11);
 
                 String recodeDate = doCurrentDate();
-                if (recorder != null) {
-                    recorder.stop();
-                    recorder.release();
-                    recorder = null;
-                }// TODO Auto-generated method stub
-                recorder = new MediaRecorder();
+//                if (recorder != null) {
+//                    recorder.stop();
+//                    recorder.release();
+//                    recorder = null;
+//                }// TODO Auto-generated method stub
+                if (recorder == null) {
+                    recorder = new MediaRecorder();
+                } else {
+                    recorder.reset();
+                }
+//                recorder = new MediaRecorder();
                 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-                recorder.setOutputFile(RECORDED_FILE + "/" + recodeDate + ".mp4");
+                recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                recorder.setOutputFile(RECORDED_FILE + "/" + recodeDate + ".3gp");
+                Log.d("BEOM13", RECORDED_FILE + "/" + recodeDate + ".3gp");
                 try {
                     Toast.makeText(getApplicationContext(),
                             "녹음을 시작합니다.", Toast.LENGTH_LONG).show();
@@ -294,7 +306,7 @@ public class ClassHourActivity extends AppCompatActivity {
     }
 
     void Push() {
-        if (Nick.equals("교수님")) {
+        if (Nick.contains("교수님")) {
             Log.d("BEOM11", "Before : " + Sign);
             new BackgroundTask1().execute();
             Log.d("BEOM11", "After : " + Sign);
@@ -341,7 +353,8 @@ public class ClassHourActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, "내 정보");
-        menu.add(0, 2, 0, "녹음목록");
+        if (!Nick.contains("교수님"))
+            menu.add(0, 2, 0, "녹음목록");
         menu.add(0, 3, 0, "로그아웃");
         return super.onCreateOptionsMenu(menu);
     }
@@ -520,7 +533,7 @@ public class ClassHourActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (Nick.equals("교수님")) {
+        if (Nick.contains("교수님")) {
             Toast.makeText(getApplicationContext(), "질문내용이 초기화 됩니다.", Toast.LENGTH_LONG).show();
             Response.Listener<String> responseListener1 = new Response.Listener<String>() {
 

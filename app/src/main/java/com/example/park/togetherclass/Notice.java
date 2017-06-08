@@ -5,13 +5,14 @@ package com.example.park.togetherclass;
  */
 
 public class Notice {
-    String Title, Content, Date, Pw, Subject;
+    String Title, Content, Date, Pw, Subject, Nick;
 
-    public Notice(String title, String content, String date, String pw, String subject) {
+    public Notice(String title, String content, String date, String pw, String subject, String Nick) {
         this.Title = title;
         this.Content = content;
         this.Date = date;
         this.Pw = pw;
         this.Subject = subject;
+        this.Nick = Nick;
     }
 }

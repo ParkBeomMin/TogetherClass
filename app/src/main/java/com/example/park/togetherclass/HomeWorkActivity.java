@@ -59,7 +59,7 @@ public class HomeWorkActivity extends AppCompatActivity {
     int todayDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     String WriteData;
     String Name, Nick;
-    Button b1;
+    Button b1, b2, b3;
     HorizontalScrollView s1;
 
     @Override
@@ -74,7 +74,8 @@ public class HomeWorkActivity extends AppCompatActivity {
 
     void init() {
         b1 = (Button) findViewById(R.id.GHomebtn);
-        b1.setEnabled(true);
+        b2 = (Button) findViewById(R.id.GFreebtn);
+        b3 = (Button) findViewById(R.id.GMeetbtn);
         b1.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
         b1.setTextColor(getResources().getColor(R.color.White));
         s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
@@ -90,8 +91,11 @@ public class HomeWorkActivity extends AppCompatActivity {
         listView.setAdapter(homeWorkAdapter);
 
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
-        Name = info.getString("Name", null);
         Nick = info.getString("Nick", null);
+        if (Nick.contains("교수님")) {
+            b3.setVisibility(View.GONE);
+            b2.setVisibility(View.GONE);
+        }
     }
 
     void init2(View view) {
@@ -120,11 +124,11 @@ public class HomeWorkActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(final AdapterView<?> adapterView, View view, int i, long l) {
                 final int position = i;
-                View v = getLayoutInflater().inflate(R.layout.delete_free_list,null);
+                View v = getLayoutInflater().inflate(R.layout.delete_free_list, null);
                 TextView title = (TextView) v.findViewById(R.id.deleteNickTv);
                 title.setText("삭제 하시겠습니까?");
                 title.setTextColor(Color.RED);
-                title.setPadding(0,30,0,10);
+                title.setPadding(0, 30, 0, 10);
                 title.setGravity(Gravity.CENTER);
                 EditText e1 = (EditText) v.findViewById(R.id.deletePwEt);
                 e1.setVisibility(View.GONE);
@@ -173,9 +177,6 @@ public class HomeWorkActivity extends AppCompatActivity {
             alertDialog.setCustomTitle(titleView);
             alertDialog.setView(view);
             alertDialog.show();
-//            builder.setCustomTitle(titleView)
-//                    .setView(view)
-//                    .show();
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,13 +186,13 @@ public class HomeWorkActivity extends AppCompatActivity {
             confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String M = PickMonth+"";
-                    if(PickMonth<10) {
-                        M = "0"+M;
+                    String M = PickMonth + "";
+                    if (PickMonth < 10) {
+                        M = "0" + M;
                     }
-                    String D = PickDay+"";
-                    if(PickDay<10){
-                        D = "0"+D;
+                    String D = PickDay + "";
+                    if (PickDay < 10) {
+                        D = "0" + D;
                     }
                     try {
                         WriteData = e1.getText().toString() + "\n" + RadioCheck() + "\n" + PickYear + "-" + M + "-" + D + "\n";
@@ -213,6 +214,12 @@ public class HomeWorkActivity extends AppCompatActivity {
                         String s[] = readStr.split("\n");
                         HomeWork homeWork = new HomeWork(s[0], s[1], s[2]);
                         Log.d("BEOM5", s[0] + s[1] + s[2]);
+                        for(int i = 0; i < homeWorkArrayList.size(); i++) {
+                            if(s[0].equals(homeWorkArrayList.get(i).Name)) {
+                                homeWorkArrayList.remove(i);
+                                Toast.makeText(getApplicationContext(), "중복된 일정은 수정됩니다.", Toast.LENGTH_LONG).show();
+                            }
+                        }
                         homeWorkArrayList.add(homeWork);
                         homeWorkAdapter.setSort(0);
                         homeWorkAdapter.notifyDataSetChanged();
@@ -221,7 +228,6 @@ public class HomeWorkActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     alertDialog.dismiss();
 
                 }
@@ -367,6 +373,30 @@ public class HomeWorkActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    int time = 99999;
+    Handler myHandler = new Handler();
+    Thread myThread = new Thread() {
+        @Override
+        public void run() {
+            super.run();
+            while (time > 0) {
+                myHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoadList();
+                        time--;
+                    }
+                });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            time = 99999;
+        }
+    };
 
     @Override
     public void onBackPressed() {

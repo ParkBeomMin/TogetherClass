@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,7 +40,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-    Button b1, b2, b3;
+    ImageButton b1, b2, b3;
     private long lastTimeBackPressed;
     boolean auto;
     String Nick, Name, Time;
@@ -57,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void init() {
-        b1 = (Button) findViewById(R.id.MFreeBoardBtn);
-        b2 = (Button) findViewById(R.id.MMeetingBtn);
+        b1 = (ImageButton) findViewById(R.id.MFreeBoardBtn);
+        b2 = (ImageButton) findViewById(R.id.MMeetingBtn);
         listView = (ListView) findViewById(R.id.weather);
         adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(adapter);
@@ -69,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         Time = info.getString("Time", null);
         Log.d("BEOM7", Nick + Name + Time);
         SharedPreferences.Editor editor = info.edit();
-        editor.putString("Time", java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + " "
+        editor.putString("Time", java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) + "-" + (java.util.Calendar.getInstance().get(java.util.Calendar.MONTH)+1) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + " "
                 + Calendar.getInstance().get(Calendar.HOUR) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND));
         editor.commit();
         if (Nick != null)
-            if (Nick.equals("교수님")) {
+            if (Nick.contains("교수님")) {
                 b1.setVisibility(View.GONE);
                 b2.setVisibility(View.GONE);
             }

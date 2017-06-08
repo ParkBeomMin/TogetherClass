@@ -72,6 +72,8 @@ public class FreeBoardActivity extends AppCompatActivity {
         new BackgroundTask().execute();
         setList("");
         ListViewMethod();
+//        myThread.start();
+
     }
 
     void init() {
@@ -147,6 +149,7 @@ public class FreeBoardActivity extends AppCompatActivity {
     }
 
     void setList(String s) {
+//        myThread.start();
         selectfreeArrayList.clear();
         l1.setAdapter(selecfreeAdapter);
         if (s.equals("")) {
@@ -192,7 +195,7 @@ public class FreeBoardActivity extends AppCompatActivity {
                 Button cancel = (Button) deleteView.findViewById(R.id.cancelBtn);
                 Button confirm = (Button) deleteView.findViewById(R.id.confirmBtn);
                 t1.setText("작성자 : " + nick + "님");
-                t1.setPadding(10,30,0,0);
+                t1.setPadding(10, 30, 0, 0);
                 final AlertDialog alertDialog = new AlertDialog.Builder(FreeBoardActivity.this).create();
                 alertDialog.setCustomTitle(titleView);
                 alertDialog.setView(deleteView);
@@ -247,7 +250,6 @@ public class FreeBoardActivity extends AppCompatActivity {
         if (v.getId() == R.id.FreeRegiBtn) {
             final AlertDialog alertDialog;
             alertDialog = new AlertDialog.Builder(this).create();
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View view = getLayoutInflater().inflate(R.layout.add_free_list, null);
             View titleView = getLayoutInflater().inflate(R.layout.add_title, null);
             ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.AddFree, android.R.layout.simple_spinner_dropdown_item);
@@ -265,33 +267,6 @@ public class FreeBoardActivity extends AppCompatActivity {
             alertDialog.setCustomTitle(titleView);
             alertDialog.setView(view);
             alertDialog.show();
-//            builder.setCustomTitle(titleView)
-//                    .setView(view)
-//                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-//                                        @Override
-//                                        public void onResponse(String response) {
-//                                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
-//                                            selectfreeArrayList.add(new Free(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0]));
-//                                            selecfreeAdapter.notifyDataSetChanged();
-//                                            BackgroundTask task = new BackgroundTask();
-//                                            task.execute();
-//                                        }
-//                                    };
-//                                    Subject[0] = spinner1.getSelectedItem().toString();
-//                                    Title[0] = e1.getText().toString();
-//                                    Log.d("BEOM8", Nick + e1.getText().toString() + e2.getText().toString() + date + Pw);
-//                                    FreeBoardRequest write = new FreeBoardRequest(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0], responseListener);
-//                                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-//                                    queue.add(write);
-//                                }
-//                            }
-//
-//                    )
-//                    .setNeutralButton("취소", null)
-//                    .show();
             confirmBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -490,6 +465,7 @@ public class FreeBoardActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onBackPressed() {

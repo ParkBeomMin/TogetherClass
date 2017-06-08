@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,9 +26,9 @@ public class PotalActivity extends AppCompatActivity {
     WebView webView;
     ProgressDialog dialog;
     final String MAIN_URL = "https://portal.hanyang.ac.kr/sso/lgin.do";
-    Button b1;
+    Button b1, b2, b3;
     HorizontalScrollView s1;
-
+String Nick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +39,17 @@ public class PotalActivity extends AppCompatActivity {
 
     void init() {
         b1 = (Button) findViewById(R.id.GPotalbtn);
-        b1.setEnabled(true);
+        b2 = (Button) findViewById(R.id.GFreebtn);
+        b3 = (Button) findViewById(R.id.GMeetbtn);
         b1.setBackground(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
         b1.setTextColor(getResources().getColor(R.color.White));
         s1 = (HorizontalScrollView) findViewById(R.id.scrollView);
+        SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
+        Nick = info.getString("Nick", null);
+        if (Nick.contains("교수님")) {
+            b3.setVisibility(View.GONE);
+            b2.setVisibility(View.GONE);
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -53,6 +61,7 @@ public class PotalActivity extends AppCompatActivity {
         webView.loadUrl(MAIN_URL);
         WebSettings webSettings = webView.getSettings();
         webSettings.setSupportZoom(true);
+        webSettings.setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -69,7 +78,28 @@ public class PotalActivity extends AppCompatActivity {
                 if (newProgress >= 100) dialog.dismiss();
             }
         });
+//        webView.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//
+//                if (event.getAction() != KeyEvent.ACTION_DOWN)
+//                    return true;
+//
+//
+//                if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                    if (webView.getUrl().equals(MAIN_URL)) {
+//                    } else if (webView.canGoBack()) {
+//                        webView.goBack();
+//                    }
+//
+//                    return true;
+//                }
+//
+//                return false;
+//            }
+//        });
     }
+
 
     void setActionBar() {
         ActionBar actionBar = getSupportActionBar();

@@ -61,7 +61,6 @@ public class RecordAdapter extends BaseAdapter {
         if(op==position) {
             i1.setImageResource(R.drawable.pause);
         }else {
-
             i1.setImageResource(R.drawable.play);
         }
         t1.setText(one.Name);
