@@ -69,8 +69,8 @@ public class ClassHourActivity extends AppCompatActivity {
     ClassHourAdapter adapter;
     ListView l1;
     String Sign = "";
-    final String RECORDED_FILE = getExternalPath() + "TCR";
-    MediaRecorder recorder;
+//    final String RECORDED_FILE = getExternalPath() + "TCR";
+//    MediaRecorder recorder;
 
 
     @Override
@@ -78,14 +78,14 @@ public class ClassHourActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_hour);
         setActionBar();
-        checkPermission2();
-        makeDir();
+//        checkPermission2();
+//        makeDir();
         init();
         ListViewMethod();
         new BackgroundTask().execute();
         if (Nick.contains("교수님")) {
             myThread.start();
-            b3.setVisibility(View.GONE);
+            b3.setText("수업 종료");
             b4.setVisibility(View.GONE);
             b5.setVisibility(View.GONE);
             b6.setVisibility(View.GONE);
@@ -137,7 +137,7 @@ public class ClassHourActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                startActivity(intent);finish();
             }
         });
         actionBar.setCustomView(view);
@@ -233,15 +233,29 @@ public class ClassHourActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else if (v.getId() == R.id.understandingButton) {
-            Response.Listener<String> responseListener = new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Toast.makeText(getApplicationContext(), "버튼누름!", Toast.LENGTH_LONG).show();
-                }
-            };
-            SendSignRequest write = new SendSignRequest("1", responseListener);
-            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            queue.add(write);
+            if(Nick.contains("교수님")) {
+                Toast.makeText(getApplicationContext(), "질문내용이 초기화 됩니다.", Toast.LENGTH_LONG).show();
+                Response.Listener<String> responseListener1 = new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                };
+                ClassAllDeleteRequest deleteRequest = new ClassAllDeleteRequest(responseListener1);
+                RequestQueue queue1 = Volley.newRequestQueue(ClassHourActivity.this);
+                queue1.add(deleteRequest);
+            }
+            else {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getApplicationContext(), "!", Toast.LENGTH_LONG).show();
+                    }
+                };
+                SendSignRequest write = new SendSignRequest("1", responseListener);
+                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                queue.add(write);
+            }
 
         } else if (v.getId() == R.id.addQuestionButton) {
             String content = e1.getText().toString();
@@ -257,7 +271,8 @@ public class ClassHourActivity extends AppCompatActivity {
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             queue.add(write);
             e1.setText("");
-        } else if (v.getId() == R.id.recodeBtn) {
+        }
+        /*else if (v.getId() == R.id.recodeBtn) {
             if (b2.getText().toString().equals("녹음하기")) {
 //                Intent intent11 = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
 //                startActivity(intent11);
@@ -302,7 +317,7 @@ public class ClassHourActivity extends AppCompatActivity {
                 b2.setText("녹음하기");
 
             }
-        }
+        }*/
     }
 
     void Push() {
@@ -317,22 +332,13 @@ public class ClassHourActivity extends AppCompatActivity {
                 Notification.Builder builder = new Notification.Builder(getApplicationContext());
                 intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);//현재 액티비티를 최상으로 올리고, 최상의 액티비티를 제외한 모든 액티비티를 없앤다.
                 PendingIntent pendingNotificationIntent = PendingIntent.getActivity(ClassHourActivity.this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-                //PendingIntent는 일회용 인텐트 같은 개념입니다.
-//                    FLAG_UPDATE_CURRENT - > 만일 이미 생성된 PendingIntent가 존재 한다면, 해당 Intent의 내용을 변경함.
-//                            FLAG_CANCEL_CURRENT -.이전에 생성한 PendingIntent를 취소하고 새롭게 하나 만든다.
-//                            FLAG_NO_CREATE->현재 생성된 PendingIntent를 반환합니다.
-//                    FLAG_ONE_SHOT - > 이 플래그를 사용해 생성된 PendingIntent는 단 한번밖에 사용할 수 없습니다
+
                 builder.setSmallIcon(R.drawable.title).setTicker("함수").setWhen(System.currentTimeMillis())
                         .setNumber(1).setContentTitle("한번 더 설명해주세요!").setContentText("한번 더 설명해주세요!")
                         .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingNotificationIntent).setAutoCancel(true).setOngoing(true);
                 //해당 부분은 API 4.1버전부터 작동합니다.
 
-//setSmallIcon - > 작은 아이콘 이미지
-//setTicker - > 알람이 출력될 때 상단에 나오는 문구.
-//setWhen -> 알림 출력 시간.
-//setContentTitle-> 알림 제목
-//setConentText->푸쉬내용
-                notificationManager.notify(1, builder.build()); // Notification send
+                notificationManager.notify(1, builder.build());
 
                 Response.Listener<String> responseListener1 = new Response.Listener<String>() {
 
@@ -353,8 +359,8 @@ public class ClassHourActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, "내 정보");
-        if (!Nick.contains("교수님"))
-            menu.add(0, 2, 0, "녹음목록");
+//        if (!Nick.contains("교수님"))
+//            menu.add(0, 2, 0, "녹음목록");
         menu.add(0, 3, 0, "로그아웃");
         return super.onCreateOptionsMenu(menu);
     }
@@ -575,39 +581,39 @@ public class ClassHourActivity extends AppCompatActivity {
         }
     };
 
-    void makeDir() {
-        File file = new File(RECORDED_FILE);
-        file.mkdir();
-        String msg = "디렉터리생성";
-
-        if (file.isDirectory() == false)
-            msg = "디렉터리 생성오류";
-        Log.d("MakeDir", msg);
-    }
-
-    public String getExternalPath() {
-        String sdPath = "";
-        String ext = Environment.getExternalStorageState();
-        if (ext.equals(Environment.MEDIA_MOUNTED)) {
-            sdPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
-            Log.d("PATH", sdPath);
-        } else {
-            sdPath = getFilesDir() + "";
-            Toast.makeText(getApplicationContext(), sdPath, Toast.LENGTH_LONG).show();
-        }
-        return sdPath;
-    }
-
-    void checkPermission2() {
-
-        int permissionCheck_RECORD = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
-        if (permissionCheck_RECORD == PackageManager.PERMISSION_GRANTED) {
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    "허용을 눌러야 정상적인 앱 실행이 가능합니다.", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO},
-                    100);
-        }
-    }
+//    void makeDir() {
+//        File file = new File(RECORDED_FILE);
+//        file.mkdir();
+//        String msg = "디렉터리생성";
+//
+//        if (file.isDirectory() == false)
+//            msg = "디렉터리 생성오류";
+//        Log.d("MakeDir", msg);
+//    }
+//
+//    public String getExternalPath() {
+//        String sdPath = "";
+//        String ext = Environment.getExternalStorageState();
+//        if (ext.equals(Environment.MEDIA_MOUNTED)) {
+//            sdPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+//            Log.d("PATH", sdPath);
+//        } else {
+//            sdPath = getFilesDir() + "";
+//            Toast.makeText(getApplicationContext(), sdPath, Toast.LENGTH_LONG).show();
+//        }
+//        return sdPath;
+//    }
+//
+//    void checkPermission2() {
+//
+//        int permissionCheck_RECORD = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+//        if (permissionCheck_RECORD == PackageManager.PERMISSION_GRANTED) {
+//        } else {
+//            Toast.makeText(getApplicationContext(),
+//                    "허용을 눌러야 정상적인 앱 실행이 가능합니다.", Toast.LENGTH_SHORT).show();
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.RECORD_AUDIO},
+//                    100);
+//        }
+//    }
 }

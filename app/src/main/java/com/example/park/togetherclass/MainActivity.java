@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.service.voice.VoiceInteractionSession;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,14 +44,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-    ImageButton b1, b2, b3;
-    LinearLayout l1;
+    ImageButton b1, b2, b3, b4, b5, b6, b7;
+    LinearLayout l1, l2, l3;
     private long lastTimeBackPressed;
     boolean auto;
     String Nick, Name, Time;
     ListView listView;
-    ArrayList<String> arrayList = new ArrayList<String>();
-    ArrayAdapter<String> adapter;
+    ArrayList<Weather> arrayList = new ArrayList<Weather>();
+    WeatherAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +64,25 @@ public class MainActivity extends AppCompatActivity {
 
     void init() {
         l1 = (LinearLayout) findViewById(R.id.line1);
+        l2 = (LinearLayout) findViewById(R.id.Lfreelist);
+        l3 = (LinearLayout) findViewById(R.id.Lnotice);
+        l2.bringToFront();
+        l3.bringToFront();
         b1 = (ImageButton) findViewById(R.id.MFreeBoardBtn);
+        CircleBtn(b1);
         b2 = (ImageButton) findViewById(R.id.MMeetingBtn);
+        CircleBtn(b2);
+        b3 = (ImageButton) findViewById(R.id.MClassHourBtn);
+        CircleBtn(b3);
+        b4 = (ImageButton) findViewById(R.id.MHomePageBtn);
+        CircleBtn(b4);
+        b5 = (ImageButton) findViewById(R.id.MHomeWorkBtn);
+        CircleBtn(b5);
+        b6 = (ImageButton) findViewById(R.id.MNoticeBtn);
+        b6.bringToFront();
+        CircleBtn(b6);
         listView = (ListView) findViewById(R.id.weather);
-        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, arrayList);
+        adapter = new WeatherAdapter(arrayList, getApplicationContext());
         listView.setAdapter(adapter);
         SharedPreferences info = getSharedPreferences("info", Activity.MODE_PRIVATE);
         auto = info.getBoolean("auto", false);
@@ -72,20 +91,27 @@ public class MainActivity extends AppCompatActivity {
         Time = info.getString("Time", null);
         Log.d("BEOM7", Nick + Name + Time);
         SharedPreferences.Editor editor = info.edit();
-        editor.putString("Time", java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) + "-" + (java.util.Calendar.getInstance().get(java.util.Calendar.MONTH)+1) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + " "
+        editor.putString("Time", java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) + "-" + (java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + 1) + "-" + java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + " "
                 + Calendar.getInstance().get(Calendar.HOUR) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND));
         editor.commit();
         if (Nick != null)
             if (Nick.contains("교수님")) {
                 b1.setVisibility(View.GONE);
                 b2.setVisibility(View.GONE);
-                l1.setVisibility(View.GONE);
+//                l1.setVisibility(View.GONE);
             }
         if (auto) {
             Snackbar.make(getWindow().getDecorView().getRootView(), "자동로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(getWindow().getDecorView().getRootView(), "로그인되었습니다.", Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    void CircleBtn(ImageButton b) {
+        b.setBackground(new ShapeDrawable(new OvalShape()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            b.setClipToOutline(true);
+        } // 이미지뷰 동그랗게
     }
 
     public void MyOnClick(View v) {
@@ -212,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                                 Weathers.get(i).getTemp() + "도 " +
                                 Weathers.get(i).getWfKor() + " \n강수확률 " +
                                 Weathers.get(i).getPop() + "%";
-                arrayList.add(data);
+                arrayList.add(Weathers.get(i));
             }
             adapter.notifyDataSetChanged();
         }
