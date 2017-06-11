@@ -45,7 +45,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton b1, b2, b3, b4, b5, b6, b7;
-    LinearLayout l1, l2, l3;
+    LinearLayout l1, l2, l3, l4;
     private long lastTimeBackPressed;
     boolean auto;
     String Nick, Name, Time;
@@ -64,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
     void init() {
         l1 = (LinearLayout) findViewById(R.id.line1);
-//        l2 = (LinearLayout) findViewById(R.id.Lfreelist);
-//        l3 = (LinearLayout) findViewById(R.id.Lnotice);
+        l2 = (LinearLayout) findViewById(R.id.Lfreelist);
+        l3 = (LinearLayout) findViewById(R.id.LProfessor);
+
 
         b1 = (ImageButton) findViewById(R.id.MFreeBoardBtn);
         CircleBtn(b1);
@@ -97,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
             if (Nick.contains("교수님")) {
                 b1.setVisibility(View.GONE);
                 b2.setVisibility(View.GONE);
+                l2.setVisibility(View.GONE);
+                l3.setVisibility(View.GONE);
 //                l1.setVisibility(View.GONE);
             }
         if (auto) {
@@ -195,9 +198,15 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);        //액션바에 표시되는 제목의 표시유무를 설정합니다.
         actionBar.setDisplayShowHomeEnabled(false);            //홈 아이콘을 숨김처리합니다.
 
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.ActionBar)));
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.MainActionBar)));
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.Actiontitle);
+        imageView.setImageResource(R.drawable.main_title);
+        LinearLayout l1 = (LinearLayout) view.findViewById(R.id.Actionback);
+        l1.setBackground(new ColorDrawable(getResources().getColor(R.color.MainActionBar)));
+        ImageButton i1 = (ImageButton) view.findViewById(R.id.homeBtn);
+        i1.setVisibility(View.INVISIBLE);
         actionBar.setCustomView(view);
     }
 

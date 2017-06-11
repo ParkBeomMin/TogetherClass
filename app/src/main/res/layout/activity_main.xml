@@ -47,13 +47,13 @@
 
     <LinearLayout
         android:id="@+id/Lnotice"
-        android:layout_marginTop="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/clock"
-        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/clock"
+        android:layout_toLeftOf="@+id/clock"
         android:layout_weight="1"
         android:gravity="center"
+        android:layout_marginBottom="85dp"
         android:orientation="vertical">
 
         <ImageButton
@@ -76,12 +76,12 @@
 
 
     <LinearLayout
+        android:id="@+id/LProfessor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/clock"
-        android:layout_toLeftOf="@+id/clock"
+        android:layout_above="@+id/clock"
+        android:layout_centerHorizontal="true"
         android:layout_weight="1"
-        android:layout_marginBottom="85dp"
         android:gravity="center"
         android:orientation="vertical">
 
