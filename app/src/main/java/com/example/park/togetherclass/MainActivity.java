@@ -64,10 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
     void init() {
         l1 = (LinearLayout) findViewById(R.id.line1);
-        l2 = (LinearLayout) findViewById(R.id.Lfreelist);
-        l3 = (LinearLayout) findViewById(R.id.Lnotice);
-        l2.bringToFront();
-        l3.bringToFront();
+//        l2 = (LinearLayout) findViewById(R.id.Lfreelist);
+//        l3 = (LinearLayout) findViewById(R.id.Lnotice);
+
         b1 = (ImageButton) findViewById(R.id.MFreeBoardBtn);
         CircleBtn(b1);
         b2 = (ImageButton) findViewById(R.id.MMeetingBtn);
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         b5 = (ImageButton) findViewById(R.id.MHomeWorkBtn);
         CircleBtn(b5);
         b6 = (ImageButton) findViewById(R.id.MNoticeBtn);
-        b6.bringToFront();
+//        b6.bringToFront();
         CircleBtn(b6);
         listView = (ListView) findViewById(R.id.weather);
         adapter = new WeatherAdapter(arrayList, getApplicationContext());
