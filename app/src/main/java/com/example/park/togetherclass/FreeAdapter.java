@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by Park on 2017-05-30.
@@ -99,7 +101,21 @@ public class FreeAdapter extends BaseAdapter {
         }
         return convertView;
     }
+    Comparator<Free> Asc = new Comparator<Free>() {
+        @Override
+        public int compare(Free data, Free t1) {
+            return t1.Date.compareTo(data.Date);
+        }
+    };
 
+    final static int ASC = 0;
+
+    public void setSort(int sortType) {
+        if (sortType == ASC) {
+            Collections.sort(arrayList, Asc);
+            this.notifyDataSetChanged();
+        }
+    }
     public void setContent(int op) {
         this.op = op;
     }

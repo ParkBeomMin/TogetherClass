@@ -11,10 +11,10 @@
     tools:context="com.example.park.togetherclass.LoginActivity">
 
     <RadioGroup
-        android:layout_marginBottom="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/grid"
+        android:layout_marginBottom="15dp"
         android:orientation="horizontal">
 
         <RadioButton
@@ -45,12 +45,13 @@
         android:columnCount="2">
 
         <TextView
-            android:id="@+id/NameTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="NAME"
-            android:textSize="20dp" />
+
+        android:id="@+id/NameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="NAME"
+        android:textSize="20dp" />
 
         <EditText
             android:id="@+id/nameEt"
@@ -80,33 +81,33 @@
             android:textSize="20dp" />
 
         <EditText
-            android:inputType="textPassword"
             android:id="@+id/pwEt"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:singleLine="true" />
 
 
         <Button
-            android:layout_columnSpan="2"
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
             android:layout_gravity="center_horizontal"
-            android:onClick="MyOnClick"
-            android:textColor="@color/White"
             android:layout_marginTop="20dp"
-            android:textSize="20dp"
             android:background="@drawable/round_button"
-            android:text="로그인" />
+            android:onClick="MyOnClick"
+            android:text="로그인"
+            android:textColor="@color/White"
+            android:textSize="20dp" />
 
         <CheckBox
-            android:layout_gravity="center"
-            android:layout_columnSpan="2"
-            android:checked="false"
             android:id="@+id/autoLoginCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_gravity="center"
+            android:checked="false"
             android:text="자동로그인" />
 
     </GridLayout>

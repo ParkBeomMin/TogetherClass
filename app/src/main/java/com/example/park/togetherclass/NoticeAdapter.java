@@ -1,6 +1,9 @@
 package com.example.park.togetherclass;
 
 import android.content.Context;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +50,11 @@ public class NoticeAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.free_list, null);
         }
         ImageView i1 = (ImageView) convertView.findViewById(R.id.freeimage);
+        i1.setBackground(new ShapeDrawable(new OvalShape()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            i1.setClipToOutline(true);
+        } // 이미지뷰 동그랗게
+
         TextView t1 = (TextView) convertView.findViewById(R.id.freetitle);
         TextView t2 = (TextView) convertView.findViewById(R.id.freenick);
         TextView t3 = (TextView) convertView.findViewById(R.id.freedate);

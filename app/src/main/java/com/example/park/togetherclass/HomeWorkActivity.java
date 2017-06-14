@@ -373,7 +373,7 @@ public class HomeWorkActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+/*
     int time = 99999;
     Handler myHandler = new Handler();
     Thread myThread = new Thread() {
@@ -396,7 +396,7 @@ public class HomeWorkActivity extends AppCompatActivity {
             }
             time = 99999;
         }
-    };
+    };*/
 
     @Override
     public void onBackPressed() {

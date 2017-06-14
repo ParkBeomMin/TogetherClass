@@ -98,7 +98,7 @@ public class HomeWorkAdapter extends BaseAdapter {
         return convertView;
     }
 
-    Comparator<HomeWork> nameAsc = new Comparator<HomeWork>() {
+    Comparator<HomeWork> Asc = new Comparator<HomeWork>() {
         @Override
         public int compare(HomeWork data, HomeWork t1) {
             return data.DeadLine.compareTo(t1.DeadLine);
@@ -109,7 +109,7 @@ public class HomeWorkAdapter extends BaseAdapter {
 
     public void setSort(int sortType) {
         if (sortType == ASC) {
-            Collections.sort(arrayList, nameAsc);
+            Collections.sort(arrayList, Asc);
             this.notifyDataSetChanged();
         }
     }

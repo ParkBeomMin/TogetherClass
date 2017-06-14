@@ -170,14 +170,15 @@ public class InfoActivity extends AppCompatActivity {
 
         View view = getLayoutInflater().inflate(R.layout.action_bar, null);
         ImageButton i1 = (ImageButton) view.findViewById(R.id.homeBtn);
-        i1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        i1.setVisibility(View.INVISIBLE);
+//        i1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
         actionBar1.setCustomView(view);
     }
 

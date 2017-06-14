@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.MNoticeBtn:
                 intent = new Intent(MainActivity.this, NoticeActivity.class);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.MMeetingBtn:
                 intent = new Intent(MainActivity.this, MeetingActivity.class);

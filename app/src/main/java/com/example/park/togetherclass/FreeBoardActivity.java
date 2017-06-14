@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -150,9 +151,10 @@ public class FreeBoardActivity extends AppCompatActivity {
 
     void setList(String s) {
 //        myThread.start();
+        new BackgroundTask().execute();
         selectfreeArrayList.clear();
         l1.setAdapter(selecfreeAdapter);
-        if (s.equals("")) {
+        if (s.equals("") || s.equals("전체")) {
             for (int i = 0; i < freeArrayList.size(); i++) {
                 selectfreeArrayList.add(freeArrayList.get(i));
             }
@@ -168,6 +170,46 @@ public class FreeBoardActivity extends AppCompatActivity {
     }
 
     void ListViewMethod() {
+//        l1.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                int count = totalItemCount - visibleItemCount;
+//
+//                if(firstVisibleItem >= count && totalItemCount != 0){
+//                    switch (spinner.getSelectedItem().toString()) {
+//                        case "전체":
+//                            setList("");
+////                        l1.setAdapter(freeAdaptnotifyDataSetChanged();
+//                            break;
+//                        case "모앱":
+//                            setList("모앱");
+//                            break;
+//                        case "컴구":
+//                            setList("컴구");
+//                            break;
+//                        case "디비":
+//                            setList("디비");
+//                            break;
+//                        case "운영체제":
+//                            setList("운영체제");
+//                            break;
+//                        case "데통":
+//                            setList("데통");
+//                            break;
+//                        case "멀미":
+//                            setList("멀미");
+//                            break;
+//                        case "알고리즘":
+//                            setList("알고리즘");
+//                            break;
+//                    }
+//                }
+//            }
+//        });
         l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -248,6 +290,7 @@ public class FreeBoardActivity extends AppCompatActivity {
     public void MyOnClick(View v) {
         Intent intent;
         if (v.getId() == R.id.FreeRegiBtn) {
+//            setList("");
             final AlertDialog alertDialog;
             alertDialog = new AlertDialog.Builder(this).create();
             View view = getLayoutInflater().inflate(R.layout.add_free_list, null);
@@ -262,6 +305,13 @@ public class FreeBoardActivity extends AppCompatActivity {
             final String date = doCurrentDate();
             final String[] Subject = {""};
             final String[] Title = {""};
+            ArrayAdapter myAdap = (ArrayAdapter) spinner1.getAdapter();
+            int spinnerPosition = myAdap.getPosition(spinner.getSelectedItem().toString());
+            Log.d("BEOM16", spinnerPosition + spinner.getSelectedItem().toString());
+            if(spinnerPosition==-1){
+                spinnerPosition=0;
+            }
+            spinner1.setSelection(spinnerPosition);
             Subject[0] = spinner1.getSelectedItem().toString();
             Title[0] = e1.getText().toString();
             alertDialog.setCustomTitle(titleView);
@@ -270,14 +320,22 @@ public class FreeBoardActivity extends AppCompatActivity {
             confirmBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+//                    setList("");
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
-                            selectfreeArrayList.add(new Free(Nick, Title[0], e2.getText().toString(), date, Pw, Subject[0]));
-                            selecfreeAdapter.notifyDataSetChanged();
-                            BackgroundTask task = new BackgroundTask();
-                            task.execute();
+                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다." + Subject[0], Toast.LENGTH_LONG).show();
+                            selectfreeArrayList.add(new Free(Title[0],Nick, date, Pw,e2.getText().toString(), Subject[0]));
+//                            freeArrayList.add(new Free(Title[0],Nick, date, Pw,e2.getText().toString(), Subject[0]));
+//                            BackgroundTask task = new BackgroundTask();
+//                            task.execute();
+//                            setList(Subject[0]);
+ selecfreeAdapter.setSort(0);
+
+                            ArrayAdapter myAdap = (ArrayAdapter) spinner.getAdapter();
+                            int spinnerPosition = myAdap.getPosition(Subject[0]);                           // spinner.setSelection(0);
+                            spinner.setSelection(spinnerPosition);
+//                            selecfreeAdapter.notifyDataSetChanged();
                         }
                     };
                     Subject[0] = spinner1.getSelectedItem().toString();
@@ -287,8 +345,20 @@ public class FreeBoardActivity extends AppCompatActivity {
                     RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                     queue.add(write);
                     alertDialog.dismiss();
+                    setList(Subject[0]);
+
+//                    myThread.start();
+//                    try {
+//                        Thread.sleep(350);
+//                        myThread.interrupt();
+////                        myThread.stop();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+
                 }
             });
+//            setList(Subject[0]);
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -358,7 +428,7 @@ public class FreeBoardActivity extends AppCompatActivity {
         public void onPostExecute(String result) {
             try {
                 freeArrayList.clear();
-                selectfreeArrayList.clear();
+//                selectfreeArrayList.clear();
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
                 int count = 0;
@@ -373,11 +443,11 @@ public class FreeBoardActivity extends AppCompatActivity {
                     freeSubject = object.getString("FreeSubject");
                     Free free = new Free(freeTitle, freeNick, freeDate, freePw, freeContent, freeSubject);
                     freeArrayList.add(free);
-                    selectfreeArrayList.add(free);
+//                    selectfreeArrayList.add(free);
                     count++;
                 }
                 freeAdapter.notifyDataSetChanged();
-                selecfreeAdapter.notifyDataSetChanged();
+//                selecfreeAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -432,7 +502,8 @@ public class FreeBoardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);finish();
+                startActivity(intent);
+                finish();
             }
         });
         actionBar.setCustomView(view);
@@ -474,5 +545,35 @@ public class FreeBoardActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    Handler myHandler = new Handler();
+    Thread myThread = new Thread() {
+        int time = 3;
+        boolean stop = false;
+        @Override
+        public void interrupt() {
+            super.interrupt();
+            stop = true;
+        }
 
+        @Override
+        public void run() {
+            super.run();
+            while (time > 0 || !stop) {
+                myHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplication(), "ㄱㄷ", Toast.LENGTH_LONG).show();
+                        setList(spinner.getSelectedItem().toString());
+                        time--;
+                    }
+                });
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            this.interrupt();
+        }
+    };
 }

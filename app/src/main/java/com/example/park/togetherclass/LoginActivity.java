@@ -28,6 +28,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
+    private long lastTimeBackPressed;
     TextView t1, t2;
     EditText NameEt, NickEt, PwEt;
     RadioButton r1, r2;
@@ -261,7 +262,14 @@ public class LoginActivity extends AppCompatActivity {
                     100);
         }
     }
-
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - lastTimeBackPressed < 1500) {
+            System.exit(0);
+            return;
+        }
+        Toast.makeText(this, "뒤로 버튼을 한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show();
+        lastTimeBackPressed = System.currentTimeMillis();
+    }
 }
 //
 //

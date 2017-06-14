@@ -30,4 +30,10 @@
         <item name="colorAccent">#9c9797</item>
     </style>
 
+    <style name="TextAppearance.AppCompat.Widget.TextView.SpinnerItem." parent="TextAppearance.AppCompat.Widget.TextView.SpinnerItem.">
+    <item name="android:textColor">@color/Black</item>
+    </style>
+    <style name="TextAppearance.AppCompat.Widget.TextView." parent="TextAppearance.AppCompat.Widget.TextView.">
+        <item name="android:textColor">@color/Black</item>
+    </style>
 </resources>

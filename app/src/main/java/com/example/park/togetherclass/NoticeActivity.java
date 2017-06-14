@@ -391,6 +391,7 @@ public class NoticeActivity extends AppCompatActivity {
         super.onBackPressed();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+//        new BackgroundTask().cancel(true);
         finish();
     }
 
