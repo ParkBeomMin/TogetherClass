@@ -324,7 +324,7 @@ public class FreeBoardActivity extends AppCompatActivity {
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다." + Subject[0], Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "게시물이 등록되었습니다.", Toast.LENGTH_LONG).show();
                             selectfreeArrayList.add(new Free(Title[0],Nick, date, Pw,e2.getText().toString(), Subject[0]));
 //                            freeArrayList.add(new Free(Title[0],Nick, date, Pw,e2.getText().toString(), Subject[0]));
 //                            BackgroundTask task = new BackgroundTask();
