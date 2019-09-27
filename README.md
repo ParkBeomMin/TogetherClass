@@ -18,6 +18,12 @@
 
 ## Screenshot
 
+<img src="./screenShot/splash.jpg" width=250> <img src="./screenShot/login.jpg" width=250> <img src="./screenShot/main.jpg" width=250>
+<img src="./screenShot/setting.jpg" width=250> <img src="./screenShot/class_time.jpg" width=250> <img src="./screenShot/freeboard.jpg" width=250>
+<img src="./screenShot/notice.jpg" width=250> <img src="./screenShot/professor.jpg" width=250> <img src="./screenShot/todo.jpg" width=250>
+<img src="./screenShot/freeboard_write.jpg" width=250> <img src="./screenShot/notice_confirm.jpg" width=250> <img src="./screenShot/todo_write.jpg" width=250>
+
+
 ## Used Library & API
 
 - volley
